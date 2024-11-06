@@ -3,14 +3,51 @@
 Log in 
 {% endblock %}
 {% block center_text %}
-<h1 class="display-4 fw-bolder">Log in<h1>
+<h1 class="display-4 fw-bolder">
+{% if login %}
+Log in
+{% else %}
+Register
+{% endif %}
+</h1>
 {% endblock %}
 {% block body %}
+<div class="container px-4 px-lg-5 my-5">
+    <div class="text-center text-black">
+{% with messages = get_flashed_messages() %}
+    {% for message in messages %}
+        <p style="color: red;">{{ message }}</p>
+    {% endfor %}
+{% endwith %}   
+    </div>
+</div>
 {% if login %}
-
+<form action="{{ url_for('auth.login') }}" method="post">
+{{ form.hidden_tag() }}
+<div class="container px-4 px-lg-5 my-5">
+    <div class="text-center text-black">
+        {{ mc.render_form(form.nick) }}
+        {{ mc.render_form(form.password) }}<br><br>
+        <button type="submit" class="btn btn-dark">Sign in</button>
+    </div>
+</div>
+</form>
 {% else %}
-<form action='' method='POST'>
-
+<form action="{{ url_for('auth.register') }}" method='POST'>
+{{ form.hidden_tag() }}
+<div class="container px-4 px-lg-5 my-5">
+    <div class="text-center text-black">
+        {{ mc.render_form(form.nick)}}
+        {{ mc.render_form(form.name)}}
+        {{ mc.render_form(form.surname)}}
+        {{ mc.render_form(form.email)}}
+        {{ mc.render_form(form.password)}}
+        {{ mc.render_form(form.repeat_password)}}
+        {{ mc.render_form(form.age)}}<br><br>
+        <button type="submit" class="btn btn-dark">Sign up</button>
+    </div>
+</div>
 </form>
 {% endif%}
 {% endblock body %}
+{% import 'macros.jinja' as mc %}

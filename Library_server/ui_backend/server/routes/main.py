@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, abort, request, current_app as db
+from flask import Blueprint, render_template, abort, request, current_app as db, url_for
 from jinja2 import TemplateNotFound
 from ..models import User, Reading as Lb
 

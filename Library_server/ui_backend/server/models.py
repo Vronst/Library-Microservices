@@ -1,6 +1,7 @@
 from typing import List, Optional
 from sqlalchemy import (
     ForeignKey,
+    Integer,
     String
 )
 from sqlalchemy.orm import (
@@ -25,7 +26,7 @@ class User(Base):
     surname: Mapped[str] = mapped_column(String(30))
     email: Mapped[str] = mapped_column(String(30))
     password: Mapped[str] = mapped_column(String)
-    age: Mapped[Optional[int]] = mapped_column()
+    age: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     latest: Mapped[List["Reading"]] = relationship(
         back_populates='user', cascade='all, delete-orphan'
     )

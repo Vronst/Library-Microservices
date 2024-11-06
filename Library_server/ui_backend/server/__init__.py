@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from .models import Base, User, Reading as Lb
 from .routes.main import main
-from .routes.auth import main as auth
+from .routes.auth import auth as auth
 from .config import Config
 
 # FIXME: install psycopg2 - dll eror
@@ -15,7 +15,7 @@ def create_app():
     app.config.from_object(Config)
 
     engine = create_engine(Config.DATABASE_URL)
-    SessionLocal = sessionmaker(bind=engine)
+    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     session = scoped_session(SessionLocal)
 
     with engine.begin() as conn:
@@ -23,8 +23,12 @@ def create_app():
            
     app.register_blueprint(main)
     app.register_blueprint(auth, url_prefix='/auth')
-    app.session = session
+    # app.session = session
    
+    
+    @app.before_request
+    def get_session() -> None:
+        g.session = session()    
         
     @app.teardown_appcontext
     def remove_session(exception=None) -> None:

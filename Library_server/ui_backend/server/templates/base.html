@@ -56,6 +56,7 @@
                             <a class="nav-link active" href="{{ url_for('auth.register')}}">Register</a>
                             {% else %}
                             <a class="nav-link active" href="{{ url_for('auth.login')}}">Login</a>
+                            {# Resolved url: {{ url_for('auth.login')}} #}
                             {% endif %}
                             {% endif %}
                             {# <span class="badge bg-dark text-white ms-1 rounded-pill">0</span> #}
