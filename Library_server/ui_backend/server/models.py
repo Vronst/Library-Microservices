@@ -24,6 +24,7 @@ class User(Base):
     name: Mapped[str] = mapped_column(String(20))
     surname: Mapped[str] = mapped_column(String(30))
     email: Mapped[str] = mapped_column(String(30))
+    password: Mapped[str] = mapped_column(String)
     age: Mapped[Optional[int]] = mapped_column()
     latest: Mapped[List["Reading"]] = relationship(
         back_populates='user', cascade='all, delete-orphan'

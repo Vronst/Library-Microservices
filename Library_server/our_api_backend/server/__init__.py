@@ -1,9 +1,7 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from .routes import main
 from .config import Config
 
-db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
