@@ -6,6 +6,7 @@ from .models import Base, User, Reading as Lb
 from .routes.main import main
 from .routes.auth import auth as auth
 from .config import Config
+from .utils import login_manager
 
 # FIXME: install psycopg2 - dll eror
 
@@ -14,22 +15,19 @@ def create_app():
 
     app.config.from_object(Config)
 
+    login_manager.init_app(app)
+
     engine = create_engine(Config.DATABASE_URL)
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-    session = scoped_session(SessionLocal)
+    sessionlocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    session = scoped_session(sessionlocal)
 
     with engine.begin() as conn:
         Base.metadata.create_all(bind=conn)
            
     app.register_blueprint(main)
     app.register_blueprint(auth, url_prefix='/auth')
-    # app.session = session
-   
-    
-    @app.before_request
-    def get_session() -> None:
-        g.session = session()    
-        
+    app.session = session
+          
     @app.teardown_appcontext
     def remove_session(exception=None) -> None:
         session.remove()

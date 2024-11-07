@@ -2,8 +2,10 @@ from typing import List, Optional
 from sqlalchemy import (
     ForeignKey,
     Integer,
-    String
+    String,
+    Boolean,
 )
+from flask_login import UserMixin
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
@@ -17,7 +19,7 @@ class Base(DeclarativeBase):
     pass
 
 
-class User(Base):
+class User(Base, UserMixin):
     __tablename__ = 'user'
     
     id: Mapped[int] = mapped_column(primary_key=True)
