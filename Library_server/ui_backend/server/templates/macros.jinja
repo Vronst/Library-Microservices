@@ -1,4 +1,4 @@
-{%macro render_form(field, subfields=False)%}
+{%macro render_form(field, subfields=False, next_to=False)%}
 {%if subfields%}
 {%for subfield in field%}
 <tr class="col-lg-4">
@@ -8,8 +8,12 @@
 
 {%endfor%}
 {%else%}
+{% if not next_to %}
 <h4>{{field.label}}</h4>
 {{field(size=32)}}
+{% else %}
+{{field.label}}{{field(size=32)}}
+{% endif %}
 {%for error in field.errors%}
             <p class='error'>{{error}}</p>
             {%endfor%}

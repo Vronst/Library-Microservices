@@ -5,3 +5,6 @@ __pycache__/
 .vscode
 test.*
 .pytest_cache
+.mypy.ini
+*.db
+/*.db

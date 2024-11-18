@@ -3,20 +3,21 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
-    Boolean,
 )
-from flask_login import UserMixin
+from flask_login import UserMixin # type: ignore
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
     mapped_column,
     relationship,
-    sessionmaker,
 )
 
 
 class Base(DeclarativeBase):
     pass
+
+
+metadata = Base.metadata  # exposing metadata for migrations or querying
 
 
 class User(Base, UserMixin):

@@ -1,18 +1,19 @@
 from flask import Flask, current_app
 from sqlalchemy import create_engine
+from sqlalchemy.engine.base import Engine
 from .routes.main import main
 from .config import Config
 from .models import library, metadata
 
 
-def create_app():
-    app = Flask(__name__)
+def create_app() -> Flask:
+    app: Flask = Flask(__name__)
 
     app.config.from_object(Config)
 
-    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
+    engine: Engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
     metadata.create_all(engine)
-    app.engine = engine
+    app.engine = engine # type: ignore[attr-defined]
     
     app.register_blueprint(main, url_prefix='/db/v1')
     

@@ -3,7 +3,11 @@
 Home
 {% endblock %}
 {% block center_text %}
+{% if current_user.is_authenticated%}
+<h1 class="display-4 fw-bolder">Welcome {{current_user.name}}!</h1>
+{% else %}
 <h1 class="display-4 fw-bolder">Library for you and your family!</h1>
+{% endif %}
 <p class="lead fw-normal text-white-50 mb-0">Read wherever you are!</p>
 {% endblock %}
 {# {%block body %} #}

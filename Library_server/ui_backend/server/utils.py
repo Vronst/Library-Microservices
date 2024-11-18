@@ -11,10 +11,12 @@ login_manager.login_view = 'auth.login'
 
 @login_manager.user_loader
 def load_user(user_id) -> None:
-    return db.session.get(User, user_id)
+    return db.session.get(User, user_id) # type: ignore[attr-defined]
 
 
 def birth_date_check(form, field) -> None:
+    if field.data == None:
+        return
     minimum_age = date.today().replace(year=date.today().year - 5)
     if field.data < date(1900, 1, 1) or field.data > minimum_age:
         raise ValidationError("Invalid date")

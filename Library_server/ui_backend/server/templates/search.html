@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}
+    Search
+{% endblock %}
+
+{% block center_text %}
+    <h1 class="display-4 fw-bolder">Search</h1>
+    <p class="lead fw-normal text-white-50 mb-0">Type name, category or author of the book/s you are looking for</p>
+{% endblock %}
+
+{% block body %}
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-black">
+{% with messages = get_flashed_messages() %}
+    {% for message in messages %}
+        <p style="color: red;">{{ message }}</p>
+    {% endfor %}
+{% endwith %}   
+    </div>
+</div>
+<form action="{{ url_for('main.search') }}" method="post">
+    {{ form.hidden_tag() }}
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-black">
+            {{ mc.render_form(form.query) }}
+            {{ mc.render_form(form.owned, next_to=True)}}<br><br>
+            <button type="submit" class="btn btn-dark">Search</button>
+        </div>
+    </div>
+</form>
+{{ super() }}
+{% endblock %}
+{% import 'macros.jinja' as mc %}
