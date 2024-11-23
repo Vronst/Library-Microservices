@@ -1,0 +1,37 @@
+volumes:
+  postgres_data:
+
+
+
+services:
+  library:
+    build: ./Library_server/ui_backend
+    ports:
+      - "14440:14440"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    networks:
+      - app-network
+
+  
+  db:
+    image: postgres:17.2
+    container_name: postgres_db
+    restart: always
+    environment:
+        POSTGRES_USER: ${USER_DB}
+        POSTGRES_PASSWORD: ${PASSWORD_DB}
+        POSTGRES_DB: ${POSTGRES_DB}
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+
+networks:
+  app-network:
+    driver: bridge

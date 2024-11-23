@@ -35,6 +35,7 @@ def index() -> str:
     #     rating = book.get('rating', None)
     #     if rating:
     #         book['rating'] = round(rating)
+    #         book['img'] = book['img'] | 'https://dummyimage.com/600x700/dee2e6/6c757d.jpg' 
         
     # TODO: Delete example book
     book: dict = {
@@ -46,6 +47,7 @@ def index() -> str:
         'owned': False,
         'author': 'adam',
         'genre': 'fantasy',
+        'img': None
     }
     ...
     return render_template('index.html', books=[book, book])
@@ -54,7 +56,7 @@ def index() -> str:
 @main.route('/book/<string:author>/<string:name>')
 def book_view(author, name) -> str:
     ...
-    return render_template('book_view.html')
+    return render_template('book_view.html', book=None, related_books=[1, 1])
 
 
 @main.route('/search/', methods=['GET', 'POST'])
