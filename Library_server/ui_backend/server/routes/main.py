@@ -1,9 +1,9 @@
-from flask import Blueprint, render_template, abort, request, current_app as db, url_for
+from flask import Blueprint, render_template, abort, request, url_for
 from flask.wrappers import Response
 from flask_login import current_user, login_required
-from jinja2 import TemplateNotFound
-from ..models import User, Reading as Lb
+from ..models import User, RecentRead, Library
 from ..forms.forms_main import SearchForm
+from .. import session as db_session
 
 
 main = Blueprint('main', __name__, template_folder='templates')
@@ -12,7 +12,7 @@ main = Blueprint('main', __name__, template_folder='templates')
 # TODO: search route, famili library, all books, your library
 
 @main.route('/')
-def index() -> Response | str:
+def index() -> str:
     """
     book -> {
         sale: bool,
@@ -21,6 +21,10 @@ def index() -> Response | str:
         price: float,
         sale_price: float,
         owned: bool,
+        author: str,
+        genre: str,
+        img: str,
+        desc: str,
     }
     """
 
@@ -40,13 +44,21 @@ def index() -> Response | str:
         'price': 3.50,
         'sale_price': 1.5,
         'owned': False,
+        'author': 'adam',
+        'genre': 'fantasy',
     }
     ...
     return render_template('index.html', books=[book, book])
 
 
+@main.route('/book/<string:author>/<string:name>')
+def book_view(author, name) -> str:
+    ...
+    return render_template('book_view.html')
+
+
 @main.route('/search/', methods=['GET', 'POST'])
-def search() -> Response:
+def search() -> str:
     form = SearchForm()
     if request.method == 'POST' and form.validate_on_submit():
         if form.query.data:
@@ -56,16 +68,24 @@ def search() -> Response:
     
     
 @main.route('/library/family_library/')
-def family_library() -> Response:
+@login_required
+def family_library() -> str:
    ...
+   return render_template('library.html')
    
    
-@main.route('/library/user_library')
-def user_library() -> Response:
+@main.route('/library/my_library')
+@login_required
+def user_library() -> str:
+    books: list[Library] = db_session.query(Library).filter(
+        Library.user_id == int(current_user.get_id())  
+        ).all()
     ...
+    return render_template('library.html', pofile=f"{current_user.name}'s Library", books=books)
     
     
 @main.route('/library/')
-def all_books() -> Response:
+def all_books() -> str:
     ...
+    return render_template('library.html')
             

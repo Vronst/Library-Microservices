@@ -41,7 +41,7 @@
                                 <li><a class="dropdown-item" href="#!">All books</a></li>
                                 <li><hr class="dropdown-divider" /></li>
                                 <li><a class="dropdown-item" href="#!">Family library</a></li>
-                                <li><a class="dropdown-item" href="#!">Your library</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('main.user_library') }}">Your library</a></li>
                             </ul>
                         </li>
                     {% endif %}
@@ -89,7 +89,7 @@
                             <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
                             {% endif %}
                             <!-- Product image-->
-                            <img class="card-img-top" src="{{ book.img }}" alt="..." />
+                            <img class="card-img-top" src="{{ book.img }}" alt="https://dummyimage.com/600x700/dee2e6/6c757d.jpg" />
                             <!-- Product details-->
                             <div class="card-body p-4">
                                 <div class="text-center">
@@ -119,9 +119,10 @@
                             <!-- Product actions-->
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                             {% if book.owned or not book.price %}
+                            {# TODO: edit href of read #}
                                 <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Read</a></div>
                                 {% else %}
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{ url_for('main.book_view', author=book.author, name=book.name) }}">Add to library</a></div>
                                 {% endif %}
                             </div>
                         </div>

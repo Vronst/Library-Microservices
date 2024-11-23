@@ -32,7 +32,7 @@ def engine() -> Generator[Engine, None, None]:
     metadata.create_all(engine)
     yield engine
 
-    metadata.drop_all()
+    metadata.drop_all(engine)
     os.unlink(DB_LOC)
     
 
