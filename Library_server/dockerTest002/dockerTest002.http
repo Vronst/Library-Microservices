@@ -1,0 +1,6 @@
+@dockerTest002_HostAddress = http://localhost:32803
+
+GET {{dockerTest002_HostAddress}}/api/Books/
+Accept: application/json
+
+###
