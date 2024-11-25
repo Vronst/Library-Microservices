@@ -57,8 +57,9 @@ class Library(Base):
     __tablename__ = 'library'
     id: Mapped[int] = mapped_column(primary_key=True)
     book_name: Mapped[str] = mapped_column(String(60))
+    book_author: Mapped[str] = mapped_column(String(60))
     user_id: Mapped[int] = mapped_column(ForeignKey('user.id'))
-    current_page: Mapped[int] = mapped_column(Integer)
+    current_page: Mapped[int] = mapped_column(Integer, default=1)
     user: Mapped['User'] = relationship(back_populates='library')
     ...
     

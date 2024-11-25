@@ -30,6 +30,15 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - app-network
+    
+  
+  pro_sec:
+    build: ./Library_server/dockerTest002
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    networks:
+      - app-network
 
 
 networks:

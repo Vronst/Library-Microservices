@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, abort, request, url_for
-from flask.wrappers import Response
+from flask import Blueprint, redirect, render_template, abort, request, url_for
+from werkzeug.wrappers.response import Response
 from flask_login import current_user, login_required
 from ..models import User, RecentRead, Library
 from ..forms.forms_main import SearchForm
@@ -91,3 +91,15 @@ def all_books() -> str:
     ...
     return render_template('library.html')
             
+
+@main.route('/add/<string:author>/<string:name>')
+@login_required
+def add_to_library(author, name) -> Response:
+    new_book = Library(
+        book_name=name,
+        book_author=author,
+        user_id=int(current_user.get_id()),
+    )
+    db_session.add(new_book)
+    db_session.commit()
+    return redirect(url_for('book_view', author=author, name=name))
