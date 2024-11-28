@@ -6,19 +6,22 @@
                     <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="{{ book.img }}" alt="..." /></div>
                     <div class="col-md-6">
                         {# <div class="small mb-1">SKU: BST-498</div> #}
-                        <h1 class="display-5 fw-bolder">{{ book.name }}</h1>
+                        <h1 class="display-5 fw-bolder">{{ book.tytul }}</h1>
                         <div class="fs-5 mb-5">
-                            {% if sale %}
+                            {# {% if sale %}
                             <span class="text-decoration-line-through">{{ book.price }}$</span>
                             <span>{{ book.sale_price }}$</span>
-                            {% else %}
-                            <span>{{ book.price }}$</span>
-                            {% endif %}
+                            {% else %} #}
+                            {{ book.gatunek }}
+                            {# <span>{{ book.price }}$</span> #}
+                            {# {% endif %} #}
                         </div>
-                        <p class="lead">{{ book.desc }}</p>
+                        <div class="fs-5 mb-5">{{ book.dataWydania }}</div>
+                        <div class="fs-5 mb-5">Liczba stron: {{ book.liczbaStron }}</div>
+                        <p class="lead" {% if book.dostepnosc %} style="color:green;">Dostepna{% else %} style="color:red;">Niedostepna{% endif %}</p>
                         <div class="d-flex">
                             {# <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 3rem" /> #}
-                            <a href="{{url_for('main.add_to_library', name=book.name, author=book.author)}}"
+                            <a {% if not book.dostepnosc %} style="pointer-events: none; color:rgb(206, 206, 206)"{% endif %}href="{{url_for('main.add_to_library', name=book.name, author=book.author)}}"
                             <button class="btn btn-outline-dark flex-shrink-0" type="button">
                                 {% if not book.owned %}
                                 <i class="bi-cart-fill me-1"></i>

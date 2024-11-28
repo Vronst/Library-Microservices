@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 # from wtforms import ValidationError # type: ignore
 from flask import Blueprint, flash, redirect, render_template, request, url_for # type: ignore
@@ -10,7 +11,11 @@ from ..forms.forms_auth import RegistrationForm, LoginForm
 from .. import session as db_session
 
 
-auth: Blueprint = Blueprint('auth', __name__, template_folder='templates')
+auth: Blueprint = Blueprint('auth',
+                            __name__,
+                            template_folder=os.path.join(
+                                os.path.dirname(__file__), '../templates/auth'
+                            ))
 
 
 @auth.route('/login', methods=['GET', 'POST'])

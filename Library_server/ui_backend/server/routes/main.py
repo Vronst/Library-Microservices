@@ -1,4 +1,6 @@
-from flask import Blueprint, redirect, render_template, abort, request, url_for
+import os
+import requests
+from flask import Blueprint, flash, redirect, render_template, session, request, url_for
 from werkzeug.wrappers.response import Response
 from flask_login import current_user, login_required
 from ..models import User, RecentRead, Library
@@ -6,7 +8,11 @@ from ..forms.forms_main import SearchForm
 from .. import session as db_session
 
 
-main = Blueprint('main', __name__, template_folder='templates')
+main = Blueprint(
+    'main',
+    __name__,
+    template_folder=os.path.join(
+        os.path.dirname(__file__), '../templates/main'))
 
 # TODO: showing books after login in library and latest in index
 # TODO: search route, famili library, all books, your library
@@ -27,8 +33,8 @@ def index() -> str:
         desc: str,
     }
     """
-
-    ...  # here I should receive books
+    books: None | list[dict]
+    # here I should receive books
     # books: list[dict]
     
     # for book in books:
@@ -38,25 +44,50 @@ def index() -> str:
     #         book['img'] = book['img'] | 'https://dummyimage.com/600x700/dee2e6/6c757d.jpg' 
         
     # TODO: Delete example book
-    book: dict = {
-        'sale': True,
-        'name': 'test',
-        'rating': 4,
-        'price': 3.50,
-        'sale_price': 1.5,
-        'owned': False,
-        'author': 'adam',
-        'genre': 'fantasy',
-        'img': None
+    # book: dict = {
+    #     'sale': True,
+    #     'name': 'test',
+    #     'rating': 4,
+    #     'price': 3.50,
+    #     'sale_price': 1.5,
+    #     'owned': False,
+    #     'author': 'adam',
+    #     'genre': 'fantasy',
+    #     'img': None
+    # }
+    books = {
+    "ksiazkaID": 1,
+    "tytul": "Pod Wulkanem",
+    "autor": "Malcolm Lowry",
+    "dostepnosc": True,
+    "gatunek": "Literatura piękna",
+    "dataWydania": "1947-01-01",
+    "liczbaStron": 403,
+    'img': 'https://dummyimage.com/600x700/dee2e6/6c757d.jpg'
     }
+    import copy  #FIXME: delete this
     ...
-    return render_template('index.html', books=[book, book])
+    try:
+        response = requests.get('http://localhost:7056/api/Books')
+        books = response.text 
+    except requests.exceptions.ConnectionError:
+        books = None
+        flash('Due to some error we couldn\'t load our books')
+    session['books'] = [copy.deepcopy(books), copy.deepcopy(books)]  # FIXME: delete [] and add request to mateo db
+    return render_template('index.html', books=[books, books])
 
 
-@main.route('/book/<string:author>/<string:name>')
+@main.route('/book/<string:author>/<string:name>/')
 def book_view(author, name) -> str:
-    ...
-    return render_template('book_view.html', book=None, related_books=[1, 1])
+    if books := session.get('books'):
+        for book in books: 
+            current_book = book if book.get('autor') == author and book.get('tytul') == name else None
+            if current_book:
+                break
+    else:
+        # TODO: query matis db
+        ...
+    return render_template('book_view.html', book=current_book, related_books=[1, 1])
 
 
 @main.route('/search/', methods=['GET', 'POST'])

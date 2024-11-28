@@ -70,14 +70,23 @@
             <div class="container px-4 px-lg-5 my-5">
                 <div class="text-center text-white">
                 {% block center_text %}
-                    <h1 class="display-4 fw-bolder">Something went wrong</h1>
-                    <p class="lead fw-normal text-white-50 mb-0">Please try refreashing!</p>
+                    {# <h1 class="display-4 fw-bolder">Something went wrong</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">Please try refreashing!</p> #}
                 {% endblock %}
                 </div>
             </div>
         </header>
         <!-- Section-->
         {% block body %}
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-black">
+        {% with messages = get_flashed_messages() %}
+            {% for message in messages %}
+                <p style="color: red;">{{ message }}</p>
+            {% endfor %}
+        {% endwith %}   
+            </div>
+        </div>
         <section class="py-5">
             <div class="container px-4 px-lg-5 mt-5">
                 <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
@@ -94,12 +103,15 @@
                             <div class="card-body p-4">
                                 <div class="text-center">
                                     <!-- Product name-->
-                                    <h5 class="fw-bolder">{{ book.name }}</h5>
+                                    <h5 class="fw-bolder">{{ book.tytul }}</h5>
                                     <!-- Product reviews-->
                                     <div class="d-flex justify-content-center small text-warning mb-2">
+                                    Genre: {{ book.gatunek }}
+                                    {% if book.rating %}
                                     {% for _ in range(book.rating)%}
                                         <div class="bi-star-fill"></div>
                                     {% endfor %}
+                                    {% endif %}
                                     </div>
                                     <!-- Product price-->
                                     {% if not book.owned %}
@@ -114,15 +126,20 @@
                                     Free!
                                     {% endif %}
                                     {% endif %}
+                                    {% if book.dostepnosc %}
+                                    <div style="color:blueviolet">Dostepna!</div>
+                                    {% else %}
+                                    <div style="color:red">Niedostepna</div>
+                                    {% endif %}
                                 </div>
                             </div>
                             <!-- Product actions-->
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                            {% if book.owned or not book.price %}
+                            {% if book.owned or not book.price and book.dostepnosc %}
                             {# TODO: edit href of read #}
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Read</a></div>
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{ url_for('main.book_view', author=book.autor, name=book.tytul) }}">Read</a></div>
                                 {% else %}
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{ url_for('main.book_view', author=book.author, name=book.name) }}">Add to library</a></div>
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{ url_for('main.book_view', author=book.autor, name=book.tytul) }}">Add to library</a></div>
                                 {% endif %}
                             </div>
                         </div>
