@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}
-{{profile}}
+{{ profile }}
 {% endblock %}
 {% block center_text%}
 <h1 class="display-4 fw-bolder">Enjoy your books!</h1>
@@ -14,12 +14,14 @@
                 <div class="card h-100">
                     <!-- Sale badge-->
                     <!-- Product image-->
-                    <img class="card-img-top" src="{{ book.img }}" alt="..." />
+                    {# <img class="card-img-top" src="{{ book.img }}" alt="..." /> #}
                     <!-- Product details-->
                     <div class="card-body p-4">
                         <div class="text-center">
                             <!-- Product name-->
-                            <h5 class="fw-bolder">{{ book.name }}</h5>
+                            <h5 class="fw-bolder">{{ book.book_name }}</h5>
+                            <h6 class="fw-bolder">{{ book.book_author }}</h6>
+                            <p>Page: {{ book.current_page }}/{{ book.pages }}</p>
                             <!-- Product reviews-->
                             <div class="d-flex justify-content-center small text-warning mb-2">
                             </div>
@@ -28,8 +30,10 @@
                     </div>
                     <!-- Product actions-->
                     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                    {# TODO: edit href of read #}
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Read</a></div>
+                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{ url_for('main.book_view', author=book.book_author, name=book.book_name) }}">Read</a></div>
+                    </div>
+                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                        <div class="text-center"><button class="btn btn-outline-dark mt-auto bg-danger" onclick="deleteBook('{{ book.book_author }}', '{{ book.book_name }}')">Remove</button></div>
                     </div>
                 </div>
             </div>
@@ -37,4 +41,23 @@
         </div>
     </div>
 </section>
+{% block scripts %}
+<script>
+function deleteBook(author, name) {
+    fetch(`/library/my_library/${author}/${name}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(response => {
+        if (response.ok) {
+            alert("Book removed successfully!");
+            location.reload(); 
+        } else {
+            alert("Failed to remove book.");
+        }
+    }).catch(error => console.error('Error:', error));
+}
+</script>
+{% endblock %}
 {% endblock %}

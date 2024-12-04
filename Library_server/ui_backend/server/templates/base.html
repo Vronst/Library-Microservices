@@ -45,6 +45,9 @@
                             </ul>
                         </li>
                     {% endif %}
+                    {% if current_user.is_admin %}
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ url_for('main.index') }}">Admin</a></li>
+                    {% endif %}    
                     </ul>
                     <form class="d-flex">
                         <button class="btn btn-outline-dark" type="submit">
@@ -157,7 +160,8 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
         <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
-
+        {% block scripts %}
+        {% endblock %}
     </body>
 </html>
 {% endblock %}

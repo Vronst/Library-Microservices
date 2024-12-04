@@ -11,6 +11,11 @@ from .utils import login_manager
 session: scoped_session
 
 
+def get_engine() -> Engine:
+    engine: Engine = create_engine(Config.DATABASE_URL)
+    return engine
+
+
 def create_app() -> Flask:
     global session
 
@@ -21,7 +26,7 @@ def create_app() -> Flask:
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
 
-    engine: Engine = create_engine(Config.DATABASE_URL)
+    engine: Engine = get_engine()
     sessionlocal: sessionmaker = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     session = scoped_session(sessionlocal)
 
