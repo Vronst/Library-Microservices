@@ -7,5 +7,8 @@
         public string Autor { get; set; }
         public bool Dostepnosc { get; set; }
         public string Gatunek { get; set; }
+        public DateOnly DataWydania { get; set; }
+        public int LiczbaStron { get; set; }
+
     }
 }
