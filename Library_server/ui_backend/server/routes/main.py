@@ -108,7 +108,13 @@ def all_books() -> str:
 @login_required
 def family_library() -> str:
    family = current_user.family_id
-   return render_template('library.html')
+   # family = db_session.query(Family).filter(Family.id == current_user.family_id)
+   family_books: dict = {}
+   if family:
+    family_books = {user.name: user.library for user in family.users}
+    for user in family.users:
+        family_books[user.name] = user.library.all()
+   return render_template('library.html', family_books=family_books)
    
    
 @main.route('/library/my_library', methods=['GET'])
