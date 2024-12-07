@@ -3,7 +3,7 @@ import requests
 from flask import Blueprint, flash, redirect, render_template, session, request, url_for
 from werkzeug.wrappers.response import Response
 from flask_login import current_user, login_required
-from ..models import User, RecentRead, Library
+from ..models import User, RecentRead, Library, Family
 from ..forms.forms_main import SearchForm
 from .. import session as db_session
 
@@ -107,7 +107,7 @@ def all_books() -> str:
 @main.route('/library/family_library/')
 @login_required
 def family_library() -> str:
-   ...
+   family = current_user.family_id
    return render_template('library.html')
    
    
