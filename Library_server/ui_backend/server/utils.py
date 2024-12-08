@@ -1,3 +1,5 @@
+import requests
+from typing import Optional
 from datetime import date
 from wtforms import ValidationError
 from sqlalchemy import Engine, text
@@ -6,6 +8,7 @@ from werkzeug.security import generate_password_hash
 from .models import User
 
 
+IMG = 'https://dummyimage.com/600x700/dee2e6/6c757d.jpg'
 login_manager = LoginManager()
 
 
@@ -14,6 +17,34 @@ def load_user(user_id) -> None | User:
     from . import session as db_session
 
     return db_session.get(User, user_id) 
+
+    
+def connect_mati(*, method: str='GET', payload: Optional[dict] = None, query: Optional[dict] = None, url: str = '') -> requests:
+    URL = 'http://pro_sec:8080/api/Books'
+    response: requests
+    method = method.upper()
+    if method == 'GET':
+        if query:
+            final_url: str = URL + url + '/0?'
+            for key, value in query.items():
+                final_url += f'{key}={value.replace(' ', '%20')}&'
+            response = requests.get(final_url)
+        else:
+            response = requests.get(URL + url)
+    elif method == 'POST':
+        ...
+        
+    return response
+
+    
+def img_checker(book: list[dict] | dict) -> list[dict] | dict:
+    UPDATE: dict = {'img': IMG}
+    
+    if isinstance(book, list):
+        list(map(lambda book: book.update(UPDATE) if not book.get('img', None) else book, book))
+    elif not book.get('img', None):
+        book.update(UPDATE)
+    return book
 
 
 def birth_date_check(form, field) -> None:

@@ -85,6 +85,8 @@ class Library(Base):
     current_page: Mapped[int] = mapped_column(Integer, default=1)
     pages: Mapped[int] = mapped_column(Integer)
     family_id: Mapped[int] = mapped_column(ForeignKey('families.id'), nullable=True)
+    img: Mapped[int] = mapped_column(String())
+    genre: Mapped[int] = mapped_column(String(30))
 
     user: Mapped['User'] = relationship(back_populates='library')
     family: Mapped[Optional['Family']] = relationship(back_populates='libraries')

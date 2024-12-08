@@ -8,6 +8,8 @@ services:
     build: ./Library_server/ui_backend
     ports:
       - "14440:14440"
+    volumes:
+      - ./Library_server/ui_backend:/app
     depends_on:
       - db
     env_file:
@@ -37,6 +39,24 @@ services:
     ports:
       - "8080:8080"
       - "8081:8081"
+      - "13601:8080"
+    depends_on:
+      - mati_db
+    networks:
+      - app-network
+  
+  mati_db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_db
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Mateusz12345"
+      MSSQL_PID: "Developer"
+    restart: unless-stopped
+    # volumes:
+    #   - BD_semestr_V.bak
     networks:
       - app-network
 

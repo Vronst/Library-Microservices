@@ -22,7 +22,9 @@
     {{ form.hidden_tag() }}
     <div class="container px-4 px-lg-5 my-5">
         <div class="text-center text-black">
-            {{ mc.render_form(form.query) }}
+            {{ mc.render_form(form.author) }}
+            {{ mc.render_form(form.title) }}
+            <br>
             {{ mc.render_form(form.owned, next_to=True)}}<br><br>
             <button type="submit" class="btn btn-dark">Search</button>
         </div>

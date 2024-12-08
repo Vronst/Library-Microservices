@@ -22,6 +22,9 @@
                         <div class="d-flex">
                             {# <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 3rem" /> #}
                             <form action="{{ url_for('main.edit_library', author=book.autor, name=book.tytul) }}" method="POST">
+                            <input type="hidden" name="pages" value="{{ book.liczbaStron }}">
+                            <input type="hidden" name="img" value="{{ book.img }}">
+                            <input type="hidden" name="genre" value="{{ book.gatunek }}">
                             {# <a {% if not book.dostepnosc or in_library %} style="pointer-events: none; color:rgb(206, 206, 206)"{% endif %}href="{{url_for('main.edit_library', name=book.tytul, author=book.autor)}}"> #}
                             <button class="btn btn-outline-dark flex-shrink-0" {% if not book.dostepnosc or in_library %}style="pointer-events: none; color:rgb(206, 206, 206)"{% endif %} type="submit">
                                 {% if not in_library %}

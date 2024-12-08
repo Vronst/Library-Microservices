@@ -76,6 +76,7 @@
                     {# <h1 class="display-4 fw-bolder">Something went wrong</h1>
                     <p class="lead fw-normal text-white-50 mb-0">Please try refreashing!</p> #}
                 {% endblock %}
+                {# {{ books }} #}
                 </div>
             </div>
         </header>
@@ -106,10 +107,10 @@
                             <div class="card-body p-4">
                                 <div class="text-center">
                                     <!-- Product name-->
-                                    <h5 class="fw-bolder">{{ book.tytul }}</h5>
+                                    <h5 class="fw-bolder">{{ book.tytul or book.book_name }}</h5>
                                     <!-- Product reviews-->
                                     <div class="d-flex justify-content-center small text-warning mb-2">
-                                    Genre: {{ book.gatunek }}
+                                    Genre: {{ book.gatunek or book.genre }}
                                     {% if book.rating %}
                                     {% for _ in range(book.rating)%}
                                         <div class="bi-star-fill"></div>
@@ -129,20 +130,26 @@
                                     Free!
                                     {% endif %}
                                     {% endif %}
+                                    {%if not library %}
                                     {% if book.dostepnosc %}
                                     <div style="color:blueviolet">Dostepna!</div>
                                     {% else %}
                                     <div style="color:red">Niedostepna</div>
                                     {% endif %}
+                                    {% endif %}
                                 </div>
                             </div>
                             <!-- Product actions-->
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            {% if not library %}
                             {% if book.owned or not book.price and book.dostepnosc %}
                             {# TODO: edit href of read #}
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{ url_for('main.book_view', author=book.autor, name=book.tytul) }}">Read</a></div>
-                                {% else %}
                                 <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{ url_for('main.book_view', author=book.autor, name=book.tytul) }}">Add to library</a></div>
+                                {% else %}
+                                <div class="text-center"><a style="color:rgb(206, 206, 206)" class="btn btn-outline-dark mt-auto" href="{{ url_for('main.book_view', author=book.autor, name=book.tytul) }}">Add to library</a></div>
+                                {% endif %}
+                                {% else %}
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{ url_for('main.book_view', author=book.book_author, name=book.book_name) }}">Details</a></div>
                                 {% endif %}
                             </div>
                         </div>
