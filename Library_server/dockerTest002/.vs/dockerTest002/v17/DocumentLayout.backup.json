@@ -3,8 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\Mateusz\\source\\repos\\dockerTest002\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{167C2520-FE3A-4D11-A4E0-A0E08F376B8A}|dockerTest002.csproj|c:\\users\\mateusz\\source\\repos\\dockertest002\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{167C2520-FE3A-4D11-A4E0-A0E08F376B8A}|dockerTest002.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{167C2520-FE3A-4D11-A4E0-A0E08F376B8A}|dockerTest002.csproj|c:\\users\\mateusz\\source\\repos\\dockertest002\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{167C2520-FE3A-4D11-A4E0-A0E08F376B8A}|dockerTest002.csproj|solutionrelative:properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{167C2520-FE3A-4D11-A4E0-A0E08F376B8A}|dockerTest002.csproj|c:\\users\\mateusz\\source\\repos\\dockertest002\\models\\confconndb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{167C2520-FE3A-4D11-A4E0-A0E08F376B8A}|dockerTest002.csproj|solutionrelative:models\\confconndb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{167C2520-FE3A-4D11-A4E0-A0E08F376B8A}|dockerTest002.csproj|c:\\users\\mateusz\\source\\repos\\dockertest002\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -19,16 +27,8 @@
       "RelativeMoniker": "D:0:0:{167C2520-FE3A-4D11-A4E0-A0E08F376B8A}|dockerTest002.csproj|solutionrelative:controllers\\bookscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{167C2520-FE3A-4D11-A4E0-A0E08F376B8A}|dockerTest002.csproj|c:\\users\\mateusz\\source\\repos\\dockertest002\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{167C2520-FE3A-4D11-A4E0-A0E08F376B8A}|dockerTest002.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{167C2520-FE3A-4D11-A4E0-A0E08F376B8A}|dockerTest002.csproj|c:\\users\\mateusz\\source\\repos\\dockertest002\\models\\ksiazka.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{167C2520-FE3A-4D11-A4E0-A0E08F376B8A}|dockerTest002.csproj|solutionrelative:models\\ksiazka.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{167C2520-FE3A-4D11-A4E0-A0E08F376B8A}|dockerTest002.csproj|c:\\users\\mateusz\\source\\repos\\dockertest002\\models\\confconndb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{167C2520-FE3A-4D11-A4E0-A0E08F376B8A}|dockerTest002.csproj|solutionrelative:models\\confconndb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -38,11 +38,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "Dockerfile",
               "DocumentMoniker": "C:\\Users\\Mateusz\\source\\repos\\dockerTest002\\Dockerfile",
               "RelativeDocumentMoniker": "Dockerfile",
@@ -50,12 +50,11 @@
               "RelativeToolTip": "Dockerfile",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2024-11-24T18:46:50.307Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-24T18:46:50.307Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "launchSettings.json",
               "DocumentMoniker": "C:\\Users\\Mateusz\\source\\repos\\dockerTest002\\Properties\\launchSettings.json",
               "RelativeDocumentMoniker": "Properties\\launchSettings.json",
@@ -68,7 +67,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Mateusz\\source\\repos\\dockerTest002\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -76,24 +75,24 @@
               "RelativeToolTip": "Program.cs",
               "ViewState": "AgIAAAEAAAAAAAAAAAAIwAoAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-24T18:29:19.244Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-24T18:29:19.244Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 0,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\Mateusz\\source\\repos\\dockerTest002\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
               "ToolTip": "C:\\Users\\Mateusz\\source\\repos\\dockerTest002\\appsettings.json",
               "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAVAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-11-24T18:28:59.75Z"
+              "WhenOpened": "2024-11-24T18:28:59.75Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "BooksController.cs",
               "DocumentMoniker": "C:\\Users\\Mateusz\\source\\repos\\dockerTest002\\Controllers\\BooksController.cs",
               "RelativeDocumentMoniker": "Controllers\\BooksController.cs",
@@ -105,7 +104,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 2,
               "Title": "ConfConnDB.cs",
               "DocumentMoniker": "C:\\Users\\Mateusz\\source\\repos\\dockerTest002\\Models\\ConfConnDB.cs",
               "RelativeDocumentMoniker": "Models\\ConfConnDB.cs",
@@ -113,11 +112,12 @@
               "RelativeToolTip": "Models\\ConfConnDB.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-24T18:25:06.431Z"
+              "WhenOpened": "2024-11-24T18:25:06.431Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "Ksiazka.cs",
               "DocumentMoniker": "C:\\Users\\Mateusz\\source\\repos\\dockerTest002\\Models\\Ksiazka.cs",
               "RelativeDocumentMoniker": "Models\\Ksiazka.cs",
