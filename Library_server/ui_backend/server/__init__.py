@@ -35,8 +35,10 @@ def create_app() -> Flask:
            
     from .routes.main import main
     from .routes.auth import auth 
+    from .routes.admin import admin
     app.register_blueprint(main)
     app.register_blueprint(auth, url_prefix='/auth')
+    app.register_blueprint(admin, url_prefix='/admin/')
           
     @app.teardown_appcontext
     def remove_session(exception=None) -> None:

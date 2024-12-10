@@ -3,8 +3,17 @@
 {{ profile }}
 {% endblock %}
 {% block center_text%}
+{% if not index %}
 {% if not family_books %}
 <h1 class="display-4 fw-bolder">Enjoy your books!</h1>
+{% endif %}
+{% else %}
+{% if current_user.is_authenticated%}
+<h1 class="display-4 fw-bolder">Welcome {{current_user.name}}!</h1>
+{% else %}
+<h1 class="display-4 fw-bolder">Library for you and your family!</h1>
+{% endif %}
+<p class="lead fw-normal text-white-50 mb-0">You recently read:</p>
 {% endif %}
 {% endblock %}
 {% block body %}
@@ -32,7 +41,7 @@
                     </div>
                     <!-- Product actions-->
                     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{ url_for('main.book_view', author=book.book_author, name=book.book_name) }}">Read</a></div>
+                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{ url_for('main.read_book', author=book.book_author, name=book.book_name) }}">Read</a></div>
                     </div>
                     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                         <div class="text-center"><button class="btn btn-outline-dark mt-auto bg-danger" onclick="deleteBook('{{ book.book_author }}', '{{ book.book_name }}')">Remove</button></div>
@@ -63,7 +72,7 @@
                     </div>
                     <!-- Product actions-->
                     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{ url_for('main.book_view', author=book.book_author, name=book.book_name) }}">Read</a></div>
+                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{ url_for('main.read_book', author=book.book_author, name=book.book_name) }}">Read</a></div>
                     </div>
                     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                         <div class="text-center"><button class="btn btn-outline-dark mt-auto bg-danger" onclick="deleteBook('{{ book.book_author }}', '{{ book.book_name }}')">Remove</button></div>

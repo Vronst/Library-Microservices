@@ -1,11 +1,13 @@
 import requests
-from typing import Optional
+from functools import wraps
+from typing import Any, Optional, Callable
 from datetime import date
 from wtforms import ValidationError
 from sqlalchemy import Engine, text
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
+from flask import abort
 from werkzeug.security import generate_password_hash
-from .models import User
+from .models import User, RecentRead
 
 
 IMG = 'https://dummyimage.com/600x700/dee2e6/6c757d.jpg'
@@ -18,8 +20,18 @@ def load_user(user_id) -> None | User:
 
     return db_session.get(User, user_id) 
 
+
+def is_admin(func: Callable) -> object:
+    @wraps(func)
+    def wrapper(*args, **kwargs) -> object:
+        if not current_user.is_admin:
+            return abort(403)
+        else:
+            return func(*args, **kwargs)
+    return wrapper
+
     
-def connect_mati(*, method: str='GET', payload: Optional[dict] = None, query: Optional[dict] = None, url: str = '') -> requests:
+def connect_mati(*, method: str='GET', payload: Optional[dict] = None, query: Optional[dict] = None, url: str = '') -> requests.Response:
     URL = 'http://pro_sec:8080/api/Books'
     response: requests
     method = method.upper()
@@ -45,6 +57,29 @@ def img_checker(book: list[dict] | dict) -> list[dict] | dict:
     elif not book.get('img', None):
         book.update(UPDATE)
     return book
+
+    
+def add_recent_read(user_id: int, book_id: int) -> None:
+    # should add sorting by timestamp
+    from . import session as db_session
+    check: RecentRead | None = db_session.query(RecentRead).filter(RecentRead.book_id == book_id).first()
+    if check:
+        return
+
+    book_check: list[RecentRead] = db_session.query(RecentRead).filter(
+        RecentRead.user_id == user_id
+    ).all()
+
+    if len(book_check) >= 6:
+        db_session.delete(book_check[0])
+        
+    new_entry: RecentRead = RecentRead(
+        user_id=user_id,
+        book_id=book_id
+    )
+    
+    db_session.add(new_entry)
+    db_session.commit()
 
 
 def birth_date_check(form, field) -> None:

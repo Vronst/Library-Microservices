@@ -16,7 +16,7 @@ main = Blueprint(
     template_folder=os.path.join(
         os.path.dirname(__file__), '../templates/main'))
 
-# TODO: change session to only store book id's and use them to query cache, like redis
+# Maybe add redis to store recent books? or  id's
 
 @main.route('/')
 def index() -> str:
@@ -32,16 +32,11 @@ def index() -> str:
     'img': 'https://dummyimage.com/600x700/dee2e6/6c757d.jpg'
     }
     """
-    try:
-        response: rResponse = connect_mati()
-        books: list[dict] = response.json()
-        img_checker(books) 
-        # for book in books:
-        #     book['img'] = 'https://dummyimage.com/600x700/dee2e6/6c757d.jpg' 
-    except requests.exceptions.ConnectionError as e:
-        books = []
-        flash(f'Due to some error we couldn\'t load our books\n{e}')
-    return render_template('index.html', books=books)
+    books: list | list[Library] = []
+    if current_user.is_authenticated:
+        recent: list[RecentRead] = current_user.latest
+        books = [book.library for book in recent]
+    return render_template('library.html', books=books, index=True)
 
 
 @main.route('/book/<string:author>/<string:name>/')
@@ -51,7 +46,8 @@ def book_view(author: str, name: str) -> str:
         'title': name,
     }).json()[0]
     img_checker(book)
-    related_books: rResponse = connect_mati(query={'genre': book['gatunek']})
+    related_books: rResponse = connect_mati(query={'genre': book['gatunek']}).json()  # add [:n] where n is limiter
+    img_checker(related_books)
     in_library: Library | None = db_session.query(Library).filter(Library.book_author == author, Library.book_name == name).first()
     return render_template('book_view.html', book=book, related_books=related_books, in_library=in_library)
 
@@ -84,8 +80,14 @@ def search() -> str:
     
 @main.route('/library/')
 def all_books() -> str:
-    ...
-    return render_template('library.html')
+    try:
+        response: rResponse = connect_mati()
+        books: list[dict] = response.json()
+        img_checker(books) 
+    except requests.exceptions.ConnectionError as e:
+        books = []
+        flash(f'Due to some error we couldn\'t load our books\n{e}')
+    return render_template('index.html', books=books)
     
 
 @main.route('/library/family_library/')
@@ -114,7 +116,10 @@ def user_library() -> str:
 @login_required
 def edit_library(author: str, name: str) -> tuple[str, int] | Response:
     check_user_db = db_session.query(Library).filter(Library.book_author == author, Library.book_name == name).first()
-    check_our_db = ...  # check if we have book
+    check_our_db = connect_mati(query={
+        'author': author,
+        'title': name
+        }).json()[0]  # check if we have book
     
     if request.method == 'POST' and not check_user_db and check_our_db:
         if 'img' in request.form.keys():
@@ -122,7 +127,8 @@ def edit_library(author: str, name: str) -> tuple[str, int] | Response:
         else:
             from ..utils import IMG
             img = IMG
-        
+        # Could be better since we can get everything from check_our_db instead of
+        # passing params through forms
         try:
             new_book = Library(
                 book_name=name,
@@ -130,7 +136,8 @@ def edit_library(author: str, name: str) -> tuple[str, int] | Response:
                 user_id=int(current_user.get_id()),
                 pages=request.form['pages'],
                 img=img,
-                genre=request.form['genre']
+                genre=request.form['genre'],
+                book_id = check_our_db.get('ksiazkaID', None)
             )
             db_session.add(new_book)
             db_session.commit()
@@ -145,3 +152,16 @@ def edit_library(author: str, name: str) -> tuple[str, int] | Response:
         flash('You already own this book')
         return redirect(url_for('main.user_library'))
         
+
+@main.route('/read/<string:author>/<string:name>')
+@login_required
+def read_book(author: str, name: str) -> Response:
+    from ..utils import add_recent_read
+    book: Library | None = db_session.query(Library).filter(
+        Library.book_author == author,
+        Library.book_name == name
+    ).first()
+    if book:
+        book_id = book.id
+        add_recent_read(int(current_user.get_id()), book_id=book_id)
+    return redirect(url_for('main.index'))

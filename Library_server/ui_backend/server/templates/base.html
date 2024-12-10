@@ -46,7 +46,7 @@
                         </li>
                     {% endif %}
                     {% if current_user.is_admin %}
-                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ url_for('main.index') }}">Admin</a></li>
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ url_for('admin.index') }}">Admin</a></li>
                     {% endif %}    
                     </ul>
                     <form class="d-flex">
