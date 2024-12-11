@@ -19,3 +19,48 @@
             {%endfor%}
 {%endif%}
 {%endmacro%}
+
+{% macro admin_view(data, columns, db) %}
+<table>
+  <tr>
+    {% for column in columns%}
+    <th>{{ column }}</th>
+    {% endfor %}
+    <th>Options</th>
+  </tr>
+{% for row in data %}
+  <tr>
+    {% for column in columns %}
+    <td>{{ row[column] }}</td>
+    {% endfor %}
+    <td>
+        <form action="{{ url_for('admin.edit_db', db=db, id=row.id) }}" method="POST">
+            <input type="hidden" name="_method" value="PUT">
+            <button type="submit">Edit</button>
+        </form>
+        <button onclick="deleteBook('{{ db }}', '{{ row.id }}')">Delete</button>
+    </td>
+  </tr>
+{% endfor %}
+</table>
+
+<script>
+function deleteRow(db, rowId) {
+    fetch(`/admin/${db}/${rowId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            alert("Row removed successfully!");
+            location.reload();
+        } else {
+            alert("Failed to remove row.");
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
+{% endmacro%}
