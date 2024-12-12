@@ -1,0 +1,66 @@
+1. GET: api/Books/all
+   - Opis: Pobiera wszystkie książki z bazy danych.
+   - Odpowiedź: Lista wszystkich książek.
+   - Przykład:
+     - Żądanie GET: api/Books/all
+     - Odpowiedź: 200 OK, JSON z wszystkimi książkami.
+
+2. GET: api/Books/{id}
+   - Opis: Pobiera książkę po ID lub filtruje książki na podstawie tytułu, autora, gatunku lub dostępności.
+   - Parametry:
+     - {id} (int): Unikalne ID książki do pobrania.
+     - title (string, opcjonalny): Tytuł książki do filtrowania.
+     - author (string, opcjonalny): Autor książki do filtrowania.
+     - genre (string, opcjonalny): Gatunek książki do filtrowania.
+     - av (bool, opcjonalny): Filtruje książki po dostępności.
+   - Odpowiedź:
+     - Jeśli {id} > 0, zwraca książkę o podanym ID.
+     - Jeśli {id} = 0, zwraca listę książek na podstawie opcjonalnych filtrów.
+     - Przykład:
+       - Żądanie GET: api/Books/0?title=SomeTitle&author=SomeAuthor
+       - Odpowiedź: 200 OK, JSON z przefiltrowanymi książkami.
+
+3. POST: api/Books
+   - Opis: Tworzy nową książkę w bazie danych.
+   - Ciało żądania: JSON z danymi książki (np. tytuł, autor, gatunek, dostępność).
+   - Autoryzacja: Wymagana autoryzacja (np. token JWT).
+   - Odpowiedź: 201 Created, JSON z nowo utworzoną książką.
+   - Przykład:
+     - Żądanie POST: api/Books z ciałem JSON
+       {
+         "Tytul": "Nowy Tytuł Książki",
+         "Autor": "Imię Autora",
+         "Dostepnosc": true,
+         "Gatunek": "Fikcja",
+         "DataWydania": "2024-12-01",
+         "LiczbaStron": 250
+       }
+     - Odpowiedź: 201 Created, JSON z utworzoną książką.
+
+4. PUT: api/Books/put
+   - Opis: Aktualizuje istniejącą książkę w bazie danych.
+   - Ciało żądania: JSON z zaktualizowanymi danymi książki.
+   - Autoryzacja: Wymagana autoryzacja.
+   - Odpowiedź: 204 No Content, jeśli książka została zaktualizowana.
+   - Przykład:
+     - Żądanie PUT: api/Books/put z ciałem JSON
+       {
+         "KsiazkaID": 1,
+         "Tytul": "Zaktualizowany Tytuł",
+         "Autor": "Zaktualizowany Autor",
+         "Dostepnosc": false,
+         "Gatunek": "Science Fiction",
+         "DataWydania": "2024-12-15",
+         "LiczbaStron": 300
+       }
+     - Odpowiedź: 204 No Content.
+
+5. DELETE: api/Books/{id}
+   - Opis: Usuwa książkę z bazy danych po jej ID.
+   - Parametry:
+     - {id} (int): Unikalne ID książki do usunięcia.
+   - Autoryzacja: Wymagana autoryzacja.
+   - Odpowiedź: 204 No Content, jeśli książka została usunięta.
+   - Przykład:
+     - Żądanie DELETE: api/Books/1
+     - Odpowiedź: 204 No Content.

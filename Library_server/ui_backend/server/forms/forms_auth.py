@@ -24,7 +24,6 @@ class RegistrationForm(FlaskForm):
                                             )
                                         ]
                                     )
-    age: DateField = DateField('Birth date', validators=[birth_date_check])
 
     
     

@@ -34,11 +34,19 @@
     <td>{{ row[column] }}</td>
     {% endfor %}
     <td>
+        {% if row.id %}
         <form action="{{ url_for('admin.edit_form', db=db, id=row.id) }}" method="POST">
+            {% else %}
+        <form action="{{ url_for('admin.edit_form', db=db, id=row.ksiazkaID) }}" method="POST">
+            {% endif %}
             <input type="hidden" name="_method" value="PUT">
             <button type="submit">Edit</button>
         </form>
-        <button onclick="deleteBook('{{ db }}', '{{ row.id }}')">Delete</button>
+        {% if row.id %}
+        <button onclick="deleteRow('{{ db }}', '{{ row.id }}')">Delete</button>
+        {% else %}
+        <button onclick="deleteRow('{{ db }}', '{{ row.ksiazkaID }}')">Delete</button>
+        {% endif %}
     </td>
   </tr>
 {% endfor %}
@@ -46,7 +54,7 @@
 
 <script>
 function deleteRow(db, rowId) {
-    fetch(`/admin/${db}/${rowId}`, {
+    fetch(`/admin/db/${db}/${rowId}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'

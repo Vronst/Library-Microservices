@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from typing import List, Optional
-from sqlalchemy import ForeignKey, Integer, String, Boolean, func
+from sqlalchemy import ForeignKey, Integer, String, Boolean, func, DateTime
 from flask_login import UserMixin  # type: ignore
 from sqlalchemy.orm import (
     DeclarativeBase,
@@ -28,7 +28,6 @@ class User(Base, UserMixin):
     surname: Mapped[str] = mapped_column(String(30))
     email: Mapped[str] = mapped_column(String(30))
     password: Mapped[str] = mapped_column(String)
-    age: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     family_id: Mapped[Optional[int]] = mapped_column(ForeignKey('families.id'), nullable=True)
 
     latest: Mapped[List["RecentRead"]] = relationship(

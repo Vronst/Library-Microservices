@@ -30,22 +30,39 @@ def is_admin(func: Callable) -> object:
             return func(*args, **kwargs)
     return wrapper
 
+
+def get_token_mati() -> str:
+    response: requests.Response = requests.post(
+        'http://pro_sec:13601/api/Auth/login',
+        json={'username': 'admin',
+         'password': 'password'},
+        headers={
+            'Content-Type': 'application/json'
+        })
+    return response.data
     
 def connect_mati(*, method: str='GET', payload: Optional[dict] = None, query: Optional[dict] = None, url: str = '') -> requests.Response:
     URL = 'http://pro_sec:8080/api/Books'
-    response: requests
+    response: requests.Response
     method = method.upper()
+    headers: dict[str, Any] = {
+        'Content-Type': 'application/json'
+    }
     if method == 'GET':
         if query:
             final_url: str = URL + url + '/0?'
             for key, value in query.items():
                 final_url += f'{key}={value.replace(' ', '%20')}&'
-            response = requests.get(final_url)
+            response = requests.get(final_url, headers=headers)
         else:
-            response = requests.get(URL + url)
+            response = requests.get(URL + url, headers=headers)
     elif method == 'POST':
-        ...
-        
+        response = requests.post(URL + url, json=payload, headers=headers)
+    elif method == 'PUT':
+        response = requests.put(URL + url, json=payload, headers=headers )
+    elif method == 'DELETE':
+        response = requests.delete(URL + url, headers=headers)
+    print(response, response.text)  # should log it?   
     return response
 
     
