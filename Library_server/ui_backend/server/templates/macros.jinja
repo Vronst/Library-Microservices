@@ -34,7 +34,7 @@
     <td>{{ row[column] }}</td>
     {% endfor %}
     <td>
-        <form action="{{ url_for('admin.edit_db', db=db, id=row.id) }}" method="POST">
+        <form action="{{ url_for('admin.edit_form', db=db, id=row.id) }}" method="POST">
             <input type="hidden" name="_method" value="PUT">
             <button type="submit">Edit</button>
         </form>
