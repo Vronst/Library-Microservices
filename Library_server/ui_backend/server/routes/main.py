@@ -1,7 +1,9 @@
 import os
+from typing import Iterable
 import requests
 from requests import Response as rResponse
 from flask import Blueprint, flash, redirect, render_template, session, request, url_for
+# from sqlalchemy import Query
 from werkzeug.wrappers.response import Response
 from flask_login import current_user, login_required
 from ..models import User, RecentRead, Library, Family
@@ -41,12 +43,12 @@ def index() -> str:
 
 @main.route('/book/<string:author>/<string:name>/')
 def book_view(author: str, name: str) -> str:
-    book: requests = connect_mati(query={
+    book: dict = connect_mati(query={
         'author': author,
         'title': name,
     }).json()[0]
     img_checker(book)
-    related_books: rResponse = connect_mati(query={'genre': book['gatunek']}).json()  # add [:n] where n is limiter
+    related_books: dict = connect_mati(query={'genre': book['gatunek']}).json()  # add [:n] where n is limiter
     img_checker(related_books)
     in_library: Library | None = db_session.query(Library).filter(Library.book_author == author, Library.book_name == name).first()
     return render_template('book_view.html', book=book, related_books=related_books, in_library=in_library)
@@ -54,7 +56,7 @@ def book_view(author: str, name: str) -> str:
 
 @main.route('/search/', methods=['GET', 'POST'])
 def search() -> str:
-    response: rResponse | list = []
+    response: Iterable[Library] | list | dict = []
     form = SearchForm()
     if request.method == 'POST' and form.validate_on_submit():
         if form.owned.data:
@@ -73,7 +75,8 @@ def search() -> str:
             if title := form.title.data:
                 query.update({'title': title})
             response = connect_mati(query=query).json()
-            img_checker(response)
+            if isinstance(response, dict) or isinstance(response, list):
+                img_checker(response)
             
     return render_template('search.html', form=form, books=response, library=form.owned.data)
     

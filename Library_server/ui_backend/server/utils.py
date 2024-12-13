@@ -39,7 +39,7 @@ def get_token_mati() -> str:
         headers={
             'Content-Type': 'application/json'
         })
-    return response.data
+    return response.text
     
 def connect_mati(*, method: str='GET', payload: Optional[dict] = None, query: Optional[dict] = None, url: str = '') -> requests.Response:
     URL = 'http://pro_sec:8080/api/Books'
