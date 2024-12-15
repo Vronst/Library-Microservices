@@ -1,4 +1,5 @@
 ﻿using dockerTest002.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +17,7 @@ namespace dockerTest002.Controllers
         }
 
         // GET: api/Books
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<Ksiazka>>> GetBooks()
         {
             return await _confConnDb.Ksiazka.ToListAsync();
@@ -73,6 +74,7 @@ namespace dockerTest002.Controllers
         }
 
         // POST: api/Books
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Ksiazka>> PostBook(Ksiazka book)
         {
@@ -82,22 +84,31 @@ namespace dockerTest002.Controllers
             return CreatedAtAction("GetItem", new { id = book.KsiazkaID }, book);
         }
 
-        // PUT: api/Books/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutBook(int id, Ksiazka book)
+        // PUT: api/Books/put
+        [Authorize]
+        [HttpPut("put")]
+        public async Task<IActionResult> PutBook(Ksiazka book)
         {
-            if (id != book.KsiazkaID)
+            var existingBook = await _confConnDb.Ksiazka.FindAsync(book.KsiazkaID);
+            if (existingBook == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _confConnDb.Entry(book).State = EntityState.Modified;
+            existingBook.Tytul = book.Tytul;
+            existingBook.Autor = book.Autor;
+            existingBook.Dostepnosc = book.Dostepnosc;
+            existingBook.Gatunek = book.Gatunek;
+            existingBook.DataWydania = book.DataWydania;
+            existingBook.LiczbaStron = book.LiczbaStron;
+
             await _confConnDb.SaveChangesAsync();
 
             return NoContent();
         }
 
         // DELETE: api/Books/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook(int id)
         {
