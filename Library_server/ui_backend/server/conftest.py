@@ -5,8 +5,7 @@ from flask import Flask
 from server import create_app
 from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import sessionmaker
-from .models import User
-
+from .models import metadata, User  # Ensure all models are imported
 
 DB_LOC = 'test_db.db'
 DB_URI = f'sqlite:///{DB_LOC}'
@@ -18,37 +17,39 @@ def app() -> Generator[Flask, None, None]:
     app: Flask = create_app()
     app.config["TESTING"] = True
     app.config["SQLALCHEMY_DATABASE_URI"] = DB_URI
-    app.config["WTF_CSRF_ENABLED"] = False
+    app.config["WTF_CSRF_ENABLED"] = False  # Disable CSRF for tests
 
-    yield app
+    yield app  # Provide the app for tests
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def engine() -> Generator[Engine, None, None]:
     """Provide a database engine for tests."""
     engine: Engine = create_engine(DB_URI)
 
-    from server.models import metadata
+    # Create all tables before tests
     metadata.create_all(engine)
-    yield engine
+    try:
+        yield engine  # Provide the engine for tests
+    finally:
+        # Drop all tables and clean up the database
+        metadata.drop_all(engine)
+        if os.path.exists(DB_LOC):
+            os.unlink(DB_LOC)
 
-    metadata.drop_all(engine)
-    os.unlink(DB_LOC)
-    
 
 @pytest.fixture(scope="function")
 def db_session(engine):
     """Provide a clean database session for each test."""
-
-    # Create a new session
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    yield session
-    # Cleanup after test
-    session.query(User).delete()
-    session.commit()
-    session.close()
+    try:
+        yield session  # Provide the session for tests
+    finally:
+        # Rollback uncommitted changes and close the session
+        session.rollback()
+        session.close()
 
 
 @pytest.fixture(scope="function")

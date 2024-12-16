@@ -142,3 +142,8 @@ def populate_users_db() -> None:
     db_session.add(admin)
     db_session.commit()
     print("Database successfuly populated")
+
+    
+def simple_logs(name: str, response: str) -> None:
+    with open(f'{name}.log', 'w') as file:
+        file.write(response)

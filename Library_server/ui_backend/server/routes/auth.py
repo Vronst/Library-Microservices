@@ -39,8 +39,8 @@ def register() -> werResponse | str:
     form: RegistrationForm = RegistrationForm()
     if request.method == 'POST' and form.validate_on_submit():
         password: str = generate_password_hash(form.password.data, salt_length=24)
-        existing_user: User | None = db_session.query(User).filter_by(nick=form.nick.data).first()
-        existing_user2: User | None = db_session.query(User).filter_by(email=form.email.data).first()
+        existing_user: User | None = db_session.query(User).filter(User.nick == form.nick.data).first()
+        existing_user2: User | None = db_session.query(User).filter(User.email == form.email.data).first()
         if not existing_user and not existing_user2:
             user: User | None = User(
                 nick=form.nick.data,
@@ -48,7 +48,6 @@ def register() -> werResponse | str:
                 surname=form.surname.data, 
                 email=form.email.data, 
                 password=password, 
-                age=datetime.today().year - form.age.data.year
                 )
             db_session.add(user) # type: ignore[attr-defined]
             db_session.commit() # type: ignore[attr-defined]
