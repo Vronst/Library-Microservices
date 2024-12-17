@@ -7,16 +7,8 @@
       "RelativeMoniker": "D:0:0:{167C2520-FE3A-4D11-A4E0-A0E08F376B8A}|dockerTest002.csproj|solutionrelative:controllers\\bookscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{167C2520-FE3A-4D11-A4E0-A0E08F376B8A}|dockerTest002.csproj|c:\\users\\mateusz\\source\\repos\\dockertest002\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{167C2520-FE3A-4D11-A4E0-A0E08F376B8A}|dockerTest002.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{167C2520-FE3A-4D11-A4E0-A0E08F376B8A}|dockerTest002.csproj|c:\\users\\mateusz\\source\\repos\\dockertest002\\controllers\\authentication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{167C2520-FE3A-4D11-A4E0-A0E08F376B8A}|dockerTest002.csproj|solutionrelative:controllers\\authentication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{167C2520-FE3A-4D11-A4E0-A0E08F376B8A}|dockerTest002.csproj|c:\\users\\mateusz\\source\\repos\\dockertest002\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{167C2520-FE3A-4D11-A4E0-A0E08F376B8A}|dockerTest002.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,45 +18,19 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "Authentication.cs",
               "DocumentMoniker": "C:\\Users\\Mateusz\\source\\repos\\dockerTest002\\Controllers\\Authentication.cs",
               "RelativeDocumentMoniker": "Controllers\\Authentication.cs",
               "ToolTip": "C:\\Users\\Mateusz\\source\\repos\\dockerTest002\\Controllers\\Authentication.cs",
               "RelativeToolTip": "Controllers\\Authentication.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAQwBYAAABKAAAAAAAAAA==",
+              "ViewState": "AgIAADkAAAAAAAAAAAAuwEwAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-10T15:23:55.962Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Mateusz\\source\\repos\\dockerTest002\\Program.cs",
-              "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\Mateusz\\source\\repos\\dockerTest002\\Program.cs",
-              "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC8AAABeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-24T18:29:19.244Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\Mateusz\\source\\repos\\dockerTest002\\appsettings.json",
-              "RelativeDocumentMoniker": "appsettings.json",
-              "ToolTip": "C:\\Users\\Mateusz\\source\\repos\\dockerTest002\\appsettings.json",
-              "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAXAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-11-24T18:28:59.75Z",
+              "WhenOpened": "2024-12-17T20:58:36.683Z",
               "EditorCaption": ""
             },
             {
@@ -75,9 +41,9 @@
               "RelativeDocumentMoniker": "Controllers\\BooksController.cs",
               "ToolTip": "C:\\Users\\Mateusz\\source\\repos\\dockerTest002\\Controllers\\BooksController.cs",
               "RelativeToolTip": "Controllers\\BooksController.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAABMAAAAYAAAAAAAAAA==",
+              "ViewState": "AgIAAGEAAAAAAAAAAAAuwG4AAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-24T18:27:31.434Z",
+              "WhenOpened": "2024-12-17T20:58:35.478Z",
               "EditorCaption": ""
             }
           ]

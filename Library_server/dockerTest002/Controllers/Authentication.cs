@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using dockerTest002.Models;
+using dockerTest002.Security;
 
 namespace dockerTest002.Controllers
 {
@@ -11,6 +14,8 @@ namespace dockerTest002.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private static readonly Dictionary<string, string> TokenStore = new();
+        public static readonly HashSet<string> RevokedTokens = new();
 
         public AuthController(IConfiguration configuration)
         {
@@ -20,13 +25,43 @@ namespace dockerTest002.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] UserLogin login)
         {
-            if (login.Username == "admin" && login.Password == "password") //to trzeba będzie zmienić na użytkowników z bazy
+            string requiredSecretKey = _configuration["Jwt:Key"];
+
+            if (string.IsNullOrEmpty(requiredSecretKey))
             {
-                var token = GenerateJwtToken(login.Username);
-                return Ok(new { Token = token });
+                return StatusCode(500, new { Message = "Secret key is not configured" });
             }
 
-            return Unauthorized();
+            string expectedHash = HashVerifier.ComputeHmacSha256Hash("adammati", requiredSecretKey);
+
+            if (!string.Equals(login.secret, expectedHash, StringComparison.OrdinalIgnoreCase))
+            {
+                return Unauthorized(new { Message = "Invalid secret" });
+            }
+
+            var token = GenerateJwtToken(login.user_id);
+            TokenStore[login.user_id] = token;
+
+            return Ok(new { Token = token });
+        }
+
+        [HttpGet("tokens")]
+        public IActionResult GetTokens()
+        {
+            return Ok(TokenStore);
+        }
+
+        [HttpPost("revoke")]
+        public IActionResult RevokeToken([FromBody] TokenRequest request)
+        {
+            if (string.IsNullOrEmpty(request.Token))
+            {
+                return BadRequest(new { Message = "Token is required" });
+            }
+
+            RevokedTokens.Add(request.Token);
+
+            return Ok(new { Message = "Token has been revoked" });
         }
 
         private string GenerateJwtToken(string username)
@@ -48,11 +83,5 @@ namespace dockerTest002.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-    }
-
-    public class UserLogin
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
     }
 }

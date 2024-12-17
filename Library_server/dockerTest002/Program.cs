@@ -3,6 +3,7 @@ using dockerTest002.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using dockerTest002.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,8 +32,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+app.UseMiddleware<TokenRevocationMiddleware>();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -45,7 +46,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapGet("/secured", [Microsoft.AspNetCore.Authorization.Authorize] () => "Access permitted.").RequireAuthorization(); //sprawdzenie czy dostaliśmy dostęp po wygenerowaniu tokena
+app.MapGet("/secured", [Microsoft.AspNetCore.Authorization.Authorize] () => "Access permitted.").RequireAuthorization();
 
 
 app.Run();
