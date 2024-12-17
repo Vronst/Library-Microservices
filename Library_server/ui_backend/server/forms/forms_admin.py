@@ -61,3 +61,7 @@ class FormBook(FlaskForm):
     dataWydania: StringField = StringField('Data Wydania', validators=[validators.Optional()])
     liczbaStron: IntegerField = IntegerField('Liczba stron', validators=[validators.DataRequired()])
     
+
+class FormToken(FlaskForm):
+    token_id: IntegerField = IntegerField('Token ID', validators=[validators.DataRequired()])
+    user_id: IntegerField = IntegerField('User ID', validators=[validators.DataRequired()])

@@ -1,4 +1,5 @@
 import os
+import requests
 from datetime import datetime
 from typing import Any, Callable, Optional, Type
 from flask import Blueprint, flash, render_template, request, redirect, url_for
@@ -14,6 +15,7 @@ from ..forms.forms_admin import (
     FormUser,
     BookForm,
     FormBook,
+    FormToken,
 )
 from .. import session as db_session
 from ..utils import is_admin, connect_mati
@@ -46,13 +48,22 @@ def index() -> str:
     len_library: int = len(db_session.query(Library).all())
     len_recent: int = len(db_session.query(RecentRead).all())
     len_family: int = len(db_session.query(Family).all())
-    len_books: int = len(connect_mati().json())
+    try:
+        len_books: int = len(connect_mati().json())
+    except requests.exceptions.JSONDecodeError:
+        len_books = 0
+    try:
+        len_tokens: int = len(connect_mati(tokens=True).json())
+    except requests.exceptions.JSONDecodeError:
+        len_tokens = 0
+        
     databases = {
         'User': len_user,
         'RecentRead': len_recent,
         'Library': len_library,
         'Family': len_family,
-        'Books': len_books
+        'Books': len_books,
+        'Tokens': len_tokens,
         }
     return render_template('admin_index.html', databases=databases)
 
@@ -72,7 +83,19 @@ def edit_db(db: str) -> str | Response | tuple[str, int]:
             'dataWydania',
             'liczbaStron'
         ]
-        data = connect_mati().json()
+        try:
+            data = connect_mati().json()
+        except requests.exceptions.JSONDecodeError:
+            data = []
+    elif db == 'Tokens':
+        columns = [
+            'user_id',
+            'token'
+        ]
+        try:
+            data = connect_mati(tokens=True)
+        except requests.exceptions.JSONDecodeError:
+            data = []
     else:
         query: Callable = lambda x: db_session.query(stm[x]).all()
         data = query(db)        
@@ -88,6 +111,7 @@ def edit_db(db: str) -> str | Response | tuple[str, int]:
 @is_admin
 def edit_form(db: str, id: int | None = None) -> str | tuple[str, int] | Response:
     # Yes i know it should be id_ or smth else then id..
+    # This function could be beter organises so TODO: organise it better
     # matis db
     form: FlaskForm
     columns: list[str]
@@ -113,11 +137,28 @@ def edit_form(db: str, id: int | None = None) -> str | tuple[str, int] | Respons
             fix_mateo: Callable = lambda x: x[0].upper() + x[1:]
             payload = {fix_mateo(key): value for key, value in payload.items()}
             if id:
-                connect_mati(method='PUT', payload=payload, url=f'/{id}')
+                response: requests.Response = connect_mati(method='PUT', payload=payload, url=f'/{id}')
             else:
-                connect_mati(method='POST', payload=payload)
+                response = connect_mati(method='POST', payload=payload)
+            if response.status_code not in [204, 201]:
+                flash('Connection failed')
             return redirect(url_for('admin.edit_db', db=db))
         return render_template('edit_form.html', form=form, columns=columns, id=id, db=db)
+    
+    elif db == 'Tokens':
+        columns = [
+            'token_id',
+            'user_id'
+            ]
+        if id:
+            token = connect_mati(token=id).json()
+            form = FormToken(**token)
+        else:
+            columns.remove('token_id')    
+            form = FormToken()
+        if form.validate_on_submit():
+            ...
+        return render_template('edit_form.html', form=form, columns=columns, id=id, db=db, token=True)
     
     # my db
     ignore: list[str] = ['id']

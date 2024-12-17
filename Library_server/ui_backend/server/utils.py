@@ -10,7 +10,9 @@ from werkzeug.security import generate_password_hash
 from .models import User, RecentRead
 
 
-IMG = 'https://dummyimage.com/600x700/dee2e6/6c757d.jpg'
+IMG: str = 'https://dummyimage.com/600x700/dee2e6/6c757d.jpg'
+TOKEN_URL: str = 'http://pro_sec:13601/api/Auth/login'
+ADMIN_TOKEN: str | None
 login_manager = LoginManager()
 
 
@@ -31,23 +33,36 @@ def is_admin(func: Callable) -> object:
     return wrapper
 
 
+# TODO: finish this
 def get_token_mati() -> str:
     response: requests.Response = requests.post(
-        'http://pro_sec:13601/api/Auth/login',
+        TOKEN_URL,
         json={'username': 'admin',
          'password': 'password'},
         headers={
             'Content-Type': 'application/json'
         })
     return response.text
+
+
+try:
+    ADMIN_TOKEN = get_token_mati()
+except requests.exceptions.ConnectionError:
+    ADMIN_TOKEN = None
     
-def connect_mati(*, method: str='GET', payload: Optional[dict] = None, query: Optional[dict] = None, url: str = '') -> requests.Response:
+def connect_mati(*, method: str='GET', payload: Optional[dict] = None, query: Optional[dict] = None, url: str = '', **kwargs) -> requests.Response:        
     URL = 'http://pro_sec:8080/api/Books'
     response: requests.Response
     method = method.upper()
     headers: dict[str, Any] = {
         'Content-Type': 'application/json'
     }
+    
+    if 'tokens' in kwargs:
+        ...
+    elif 'token' in kwargs:
+        ...
+
     if method == 'GET':
         if query:
             final_url: str = URL + url + '/0?'

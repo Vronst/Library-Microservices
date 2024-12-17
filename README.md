@@ -22,13 +22,17 @@ Now run
 docker compose up --build
 ```
 to build containers. If everything works you now only have to populate database for pro_sec.
+Firstly copy backup file to container:
+```bash
+docker cp BD_semestr_V.bak `conteiner_ID`:var/backups
+```
 For that simply enter the terminal for your container
 ```bash
 docker exec -it <id of your conteiner> /bin/bash
 ```
 and inside type:
 ```bash
-/opt/mssql-tools18/bin$ cd /opt/mssql-tools18/bin & ./sqlcmd -S localhost -U sa -P 'Mateusz12345' -C
+cd /opt/mssql-tools18/bin & ./sqlcmd -S localhost -U sa -P 'Mateusz12345' -C
 ```
 This shouold log you into mysql database. Now few simple commends and you are done!
 ```sql

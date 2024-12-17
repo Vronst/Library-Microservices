@@ -15,7 +15,11 @@ Form
         {% for column in columns %}
         {{ mc.render_form(form[column])}}
         {% endfor %}
+        {% if token %}
+        <button type="submit" class="btn btn-dark">Generate</button>
+        {% else %}
         <button type="submit" class="btn btn-dark">Save</button>
+        {% endif %}
     </div>
 </div>
 </form>
