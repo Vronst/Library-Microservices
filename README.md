@@ -32,7 +32,7 @@ docker exec -it <id of your conteiner> /bin/bash
 ```
 and inside type:
 ```bash
-cd /opt/mssql-tools18/bin & ./sqlcmd -S localhost -U sa -P 'Mateusz12345' -C
+cd /opt/mssql-tools18/bin && ./sqlcmd -S localhost -U sa -P 'Mateusz12345' -C
 ```
 This shouold log you into mysql database. Now few simple commends and you are done!
 ```sql

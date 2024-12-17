@@ -1,4 +1,6 @@
 import requests
+import hmac
+import hashlib
 from functools import wraps
 from typing import Any, Optional, Callable
 from datetime import date
@@ -33,12 +35,20 @@ def is_admin(func: Callable) -> object:
     return wrapper
 
 
+def hash_secret(secret: str, key: str):
+    hashed = hmac.new(key.encode(), secret.encode(), hashlib.sha256).hexdigest()
+    return hashed
+
+    
+SECRET = hash_secret('adammati', '34B8PKD4789NDSS889FD53AD31467C52DBE53ED2SDG5D8D82DDNMNDSA')
+
+
 # TODO: finish this
-def get_token_mati() -> str:
+def get_token_mati(id_: int = 0) -> str:
     response: requests.Response = requests.post(
         TOKEN_URL,
-        json={'username': 'admin',
-         'password': 'password'},
+        json={'user_id': 'admin',
+              'secret': 'secret'},
         headers={
             'Content-Type': 'application/json'
         })
@@ -54,15 +64,12 @@ def connect_mati(*, method: str='GET', payload: Optional[dict] = None, query: Op
     URL = 'http://pro_sec:8080/api/Books'
     response: requests.Response
     method = method.upper()
+    token: str | None = ADMIN_TOKEN if ADMIN_TOKEN else get_token_mati(0)
     headers: dict[str, Any] = {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization:': 'Bearer ' + f'{token}'
     }
     
-    if 'tokens' in kwargs:
-        ...
-    elif 'token' in kwargs:
-        ...
-
     if method == 'GET':
         if query:
             final_url: str = URL + url + '/0?'

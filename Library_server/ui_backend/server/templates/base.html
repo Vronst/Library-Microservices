@@ -143,7 +143,6 @@
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                             {% if not library %}
                             {% if book.owned or not book.price and book.dostepnosc %}
-                            {# TODO: edit href of read #}
                                 <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{ url_for('main.book_view', author=book.autor, name=book.tytul) }}">Add to library</a></div>
                                 {% else %}
                                 <div class="text-center"><a style="color:rgb(206, 206, 206)" class="btn btn-outline-dark mt-auto" href="{{ url_for('main.book_view', author=book.autor, name=book.tytul) }}">Add to library</a></div>
