@@ -3,6 +3,12 @@
 DB
 {% endblock %}
 {% block body %}
+{# {{ data }} #}
+{% with messages = get_flashed_messages() %}
+    {% for message in messages %}
+        <p style="color: red;">{{ message }}</p>
+    {% endfor %}
+{% endwith %}  
 <form action="{{ url_for('admin.edit_db', db=db)}}" method="POST">
     <button type="submit">New</button>
 </form>

@@ -1,4 +1,6 @@
 import requests
+import hmac
+import hashlib
 from functools import wraps
 from typing import Any, Optional, Callable
 from datetime import date
@@ -10,7 +12,9 @@ from werkzeug.security import generate_password_hash
 from .models import User, RecentRead
 
 
-IMG = 'https://dummyimage.com/600x700/dee2e6/6c757d.jpg'
+IMG: str = 'https://dummyimage.com/600x700/dee2e6/6c757d.jpg'
+TOKEN_URL: str = 'http://pro_sec:8080/api/Auth/login'
+ADMIN_TOKEN: str | None = None
 login_manager = LoginManager()
 
 
@@ -31,38 +35,66 @@ def is_admin(func: Callable) -> object:
     return wrapper
 
 
-def get_token_mati() -> str:
+def hash_secret(secret: str, key: str):
+    hashed = hmac.new(key.encode(), secret.encode(), hashlib.sha256).hexdigest()
+    return hashed
+
+    
+SECRET = hash_secret('adammati', '34B8PKD4789NDSS889FD53AD31467C52DBE53ED2SDG5D8D82DDNMNDSA')
+
+
+# TODO: finish this
+def get_token_mati(id_: int = 0) -> str:
     response: requests.Response = requests.post(
-        'http://pro_sec:13601/api/Auth/login',
-        json={'username': 'admin',
-         'password': 'password'},
+        TOKEN_URL,
+        json={'user_id': str(int),
+              'secret': SECRET},
         headers={
             'Content-Type': 'application/json'
         })
+    with open('token.log', 'w') as file:
+        file.write(response.text) 
     return response.text
+
+
+# try:
+#     ADMIN_TOKEN = get_token_mati()
+# except requests.exceptions.ConnectionError:
+#     ADMIN_TOKEN = None
     
-def connect_mati(*, method: str='GET', payload: Optional[dict] = None, query: Optional[dict] = None, url: str = '') -> requests.Response:
+def connect_mati(*, method: str='GET', payload: Optional[dict] = None, query: Optional[dict] = None, url: str = '', **kwargs) -> requests.Response:        
+    global ADMIN_TOKEN
+    if not ADMIN_TOKEN:
+        ADMIN_TOKEN = get_token_mati()
     URL = 'http://pro_sec:8080/api/Books'
     response: requests.Response
     method = method.upper()
+    token: str = ADMIN_TOKEN 
+    # token = 'lol'
     headers: dict[str, Any] = {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {token}'
     }
     if method == 'GET':
-        if query:
-            final_url: str = URL + url + '/0?'
-            for key, value in query.items():
-                final_url += f'{key}={value.replace(' ', '%20')}&'
-            response = requests.get(final_url, headers=headers)
+        if kwargs.get('tokens', False):
+            response = requests.get(URL.split('/Books')[0] + '/Auth/tokens')
         else:
-            response = requests.get(URL + url, headers=headers)
+            if query:
+                final_url: str = URL + url + '/0?'
+                for key, value in query.items():
+                    final_url += f'{key}={value.replace(' ', '%20')}&'
+                response = requests.get(final_url, headers=headers)
+            else:
+                response = requests.get(URL + url, headers=headers) if url \
+                    else requests.get(URL + '/all' ,headers=headers)
     elif method == 'POST':
         response = requests.post(URL + url, json=payload, headers=headers)
     elif method == 'PUT':
-        response = requests.put(URL + url, json=payload, headers=headers )
+        response = requests.put(URL + '/put', json=payload, headers=headers )
     elif method == 'DELETE':
         response = requests.delete(URL + url, headers=headers)
-    print(response, response.text)  # should log it?   
+    with open('response.log', 'w') as file:
+        file.write(response.text + str(response.status_code))
     return response
 
     
@@ -112,8 +144,16 @@ def reset_database() -> None:
     from server import Base
     
     engine: Engine = get_engine()
-    
+    with engine.connect() as conn:
+        # Drop the dependent tables first
+        conn.execute(text("DROP TABLE IF EXISTS recently_read CASCADE"))
+        conn.execute(text("DROP TABLE IF EXISTS families CASCADE"))
+        conn.execute(text("DROP TABLE IF EXISTS libraries CASCADE"))
+        
+        # Now drop the users table
+        conn.execute(text("DROP TABLE IF EXISTS users CASCADE"))
     Base.metadata.drop_all(bind=engine)
+    # Recreate tables
     Base.metadata.create_all(bind=engine)
     
     engine.dispose()

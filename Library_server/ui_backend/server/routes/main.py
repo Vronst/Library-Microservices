@@ -83,13 +83,19 @@ def search() -> str:
     
 @main.route('/library/')
 def all_books() -> str:
+    exceptions: list[Exception] | list = []
     try:
         response: rResponse = connect_mati()
         books: list[dict] = response.json()
         img_checker(books) 
     except requests.exceptions.ConnectionError as e:
         books = []
-        flash(f'Due to some error we couldn\'t load our books\n{e}')
+        exceptions.append(e)
+    except requests.exceptions.JSONDecodeError as e:
+        books = []
+        exceptions.append(e)
+    if exceptions:
+        flash(f'Due to some error we couldn\'t load our books\n{exceptions}')
     return render_template('index.html', books=books)
     
 

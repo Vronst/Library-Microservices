@@ -1,0 +1,136 @@
+
+1. AuthController
+Kontroler "AuthController" jest odpowiedzialny za obsługę operacji związanych z autentykacją, takich jak logowanie, pobieranie aktywnych tokenów oraz unieważnianie tokenów.
+
+Endpoints:
+
+- POST /api/Auth/login
+  Opis: Ten endpoint pozwala użytkownikowi na logowanie się, przesyłając obiekt "UserLogin", który zawiera identyfikator użytkownika oraz tajny klucz. Jeśli podany sekret pasuje do oczekiwanego hasha, generowany jest token JWT, który zostaje zwrócony.
+  Treść żądania:
+  {
+    "user_id": "string",
+    "secret": "string"
+  }
+  Odpowiedź:
+    - 200 OK: Zwraca token JWT.
+    {
+      "Token": "string"
+    }
+    - 401 Unauthorized: Niepoprawny sekret.
+    {
+      "Message": "Invalid secret"
+    }
+    - 500 Internal Server Error: Klucz sekretu nie jest skonfigurowany.
+    {
+      "Message": "Secret key is not configured"
+    }
+
+- GET /api/Auth/tokens
+  Opis: Endpoint zwraca listę wszystkich aktywnych tokenów.
+  Odpowiedź:
+    - 200 OK: Zwraca listę tokenów.
+    {
+      "user_id": "token"
+    }
+
+- POST /api/Auth/revoke
+  Opis: Endpoint pozwala użytkownikowi unieważnić konkretny token JWT, podając go w treści żądania.
+  Treść żądania:
+  {
+    "Token": "string"
+  }
+  Odpowiedź:
+    - 200 OK: Potwierdza, że token został unieważniony.
+    {
+      "Message": "Token has been revoked"
+    }
+    - 400 Bad Request: Token jest wymagany.
+    {
+      "Message": "Token is required"
+    }
+
+Metody pomocnicze:
+
+- GenerateJwtToken(string username)
+  Opis: Generuje token JWT z podanym identyfikatorem użytkownika jako roszczeniem. Token jest podpisany za pomocą sekretnego klucza oraz określonego czasu wygaśnięcia.
+
+2. BooksController
+Kontroler "BooksController" zapewnia operacje CRUD dla zarządzania książkami w systemie. Umożliwia pobieranie, dodawanie, aktualizowanie i usuwanie książek.
+
+Endpoints:
+
+- GET /api/Books/all
+  Opis: Pobiera wszystkie książki z bazy danych.
+  Odpowiedź:
+    - 200 OK: Zwraca listę wszystkich książek.
+    [
+      {
+        "KsiazkaID": 1,
+        "Tytul": "string",
+        "Autor": "string",
+        "Dostepnosc": true,
+        "Gatunek": "string",
+        "DataWydania": "string",
+        "LiczbaStron": 300
+      }
+    ]
+
+- GET /api/Books/{id}
+  Opis: Pobiera książkę po jej ID lub za pomocą filtrów takich jak tytuł, autor, gatunek lub dostępność.
+  Parametry żądania:
+    - id (opcjonalnie): ID książki.
+    - title (opcjonalnie): Tytuł książki.
+    - author (opcjonalnie): Autor książki.
+    - genre (opcjonalnie): Gatunek książki.
+    - av (opcjonalnie): Dostępność książki (true/false).
+  Odpowiedź:
+    - 200 OK: Zwraca książkę lub listę książek zgodnie z zapytaniem.
+    - 404 Not Found: Brak książek pasujących do kryteriów.
+
+- POST /api/Books
+  Opis: Dodaje nową książkę do bazy danych. Użytkownik musi być uwierzytelniony, aby skorzystać z tego endpointu.
+  Treść żądania:
+  {
+    "Tytul": "string",
+    "Autor": "string",
+    "Dostepnosc": true,
+    "Gatunek": "string",
+    "DataWydania": "string",
+    "LiczbaStron": 300
+  }
+  Odpowiedź:
+    - 201 Created: Książka została pomyślnie dodana.
+    {
+      "KsiazkaID": 1,
+      "Tytul": "string",
+      "Autor": "string",
+      "Dostepnosc": true,
+      "Gatunek": "string",
+      "DataWydania": "string",
+      "LiczbaStron": 300
+    }
+
+- PUT /api/Books/put
+  Opis: Aktualizuje istniejącą książkę w bazie danych. Użytkownik musi być uwierzytelniony, aby skorzystać z tego endpointu.
+  Treść żądania:
+  {
+    "KsiazkaID": 1,
+    "Tytul": "string",
+    "Autor": "string",
+    "Dostepnosc": true,
+    "Gatunek": "string",
+    "DataWydania": "string",
+    "LiczbaStron": 300
+  }
+  Odpowiedź:
+    - 204 No Content: Książka została pomyślnie zaktualizowana.
+    - 404 Not Found: Książka o podanym ID nie istnieje.
+
+- DELETE /api/Books/{id}
+  Opis: Usuwa książkę o podanym ID z bazy danych. Użytkownik musi być uwierzytelniony, aby skorzystać z tego endpointu.
+  Odpowiedź:
+    - 204 No Content: Książka została pomyślnie usunięta.
+    - 404 Not Found: Książka o podanym ID nie istnieje.
+
+Autentykacja i Autoryzacja:
+- Autoryzacja jest wymagana dla operacji POST, PUT i DELETE na książkach. Atrybut "Authorize" zapewnia, że tylko uwierzytelnieni użytkownicy mogą wykonywać te operacje.
