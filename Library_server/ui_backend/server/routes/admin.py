@@ -95,7 +95,7 @@ def edit_db(db: str) -> str | Response | tuple[str, int]:
             'token'
         ]
         try:
-            data = connect_mati(tokens=True)
+            data = connect_mati(tokens=True).json()
         except requests.exceptions.JSONDecodeError:
             data = []
     else:
@@ -156,13 +156,11 @@ def edit_form(db: str, id: int | None = None) -> str | tuple[str, int] | Respons
                 else:
                     response = connect_mati(method='POST', payload=payload)
                 if response.status_code not in [204, 201]:
+                    with open('admin.log', 'w') as file:
+                        file.write(response.text + str(response.status_code))
                     flash('Connection failed')
                 redirection = True
         case 'Tokens':
-            columns = [
-                'token_id',
-                'user_id'
-                ]
             columns = [
                 'token_id',
                 'user_id'
@@ -174,8 +172,12 @@ def edit_form(db: str, id: int | None = None) -> str | tuple[str, int] | Respons
                 columns.remove('token_id')    
                 form = stf[db][0]()
             if form.validate_on_submit():
-                ...
-                
+                payload = {**form.data}
+                if id:
+                    response = connect_mati(method='PUT', payload=payload, url=f'/{id}')
+                else:
+                    response = connect_mati(method='PUT', payload=payload)
+                redirection = True 
         case _:
             ignore: list[str] = ['id']
             obj: Base | None = db_session.query(stm[db]).get(ident=id)
@@ -203,4 +205,3 @@ def edit_form(db: str, id: int | None = None) -> str | tuple[str, int] | Respons
         return redirect(url_for('admin.edit_db', db=db))  
     else:
         return render_template('edit_form.html', form=form, columns=columns, id=id, db=db, token=token)  
-    

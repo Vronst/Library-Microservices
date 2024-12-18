@@ -37,7 +37,11 @@
         {% if row.id %}
         <form action="{{ url_for('admin.edit_form', db=db, id=row.id) }}" method="POST">
             {% else %}
+            {% if row.ksiazkaID%}
         <form action="{{ url_for('admin.edit_form', db=db, id=row.ksiazkaID) }}" method="POST">
+            {% else%}
+        <form action="{{ url_for('admin.edit_form', db=db) }}" method="POST">
+            {% endif %}
             {% endif %}
             <input type="hidden" name="_method" value="PUT">
             <button type="submit">Edit</button>

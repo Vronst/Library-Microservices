@@ -3,6 +3,7 @@
 DB
 {% endblock %}
 {% block body %}
+{# {{ data }} #}
 {% with messages = get_flashed_messages() %}
     {% for message in messages %}
         <p style="color: red;">{{ message }}</p>
