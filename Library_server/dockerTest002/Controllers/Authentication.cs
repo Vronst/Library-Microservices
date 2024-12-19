@@ -14,7 +14,7 @@ namespace dockerTest002.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        private static readonly Dictionary<string, string> TokenStore = new();
+        private static readonly Dictionary<string, UserLogin> TokenStore = new();
         public static readonly HashSet<string> RevokedTokens = new();
 
         public AuthController(IConfiguration configuration)
@@ -40,7 +40,11 @@ namespace dockerTest002.Controllers
             }
 
             var token = GenerateJwtToken(login.user_id);
-            TokenStore[login.user_id] = token;
+            TokenStore[login.user_id] = new UserLogin
+            {
+                user_id = login.user_id,
+                secret = token
+            };
 
             return Ok(new { Token = token });
         }
@@ -48,7 +52,13 @@ namespace dockerTest002.Controllers
         [HttpGet("tokens")]
         public IActionResult GetTokens()
         {
-            return Ok(TokenStore);
+            var result = TokenStore.Values.Select(t => new
+            {
+                t.user_id,
+                t.secret
+            }).ToList();
+
+            return Ok(result);
         }
 
         [HttpPost("revoke")]
