@@ -47,14 +47,14 @@ SECRET = hash_secret('adammati', '34B8PKD4789NDSS889FD53AD31467C52DBE53ED2SDG5D8
 def get_token_mati(id_: int = 0) -> str:
     response: requests.Response = requests.post(
         TOKEN_URL,
-        json={'user_id': str(int),
+        json={'user_id': str(id_),
               'secret': SECRET},
         headers={
             'Content-Type': 'application/json'
         })
     with open('token.log', 'w') as file:
         file.write(response.text) 
-    return response.text
+    return response.json()['token']
 
 
 # try:
