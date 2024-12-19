@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "sXXpvk8dyf4=",
+  "dgSpecHash": "f7Tm+8pgeUw=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Mateusz\\Desktop\\Pusty\\Library_server\\dockerTest002\\dockerTest002.csproj",
+  "projectFilePath": "C:\\Users\\Mateusz\\Desktop\\Pusty\\Library-Microservices\\Library_server\\dockerTest002\\dockerTest002.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Mateusz\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\Mateusz\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
