@@ -63,5 +63,5 @@ class FormBook(FlaskForm):
     
 
 class FormToken(FlaskForm):
-    token_id: IntegerField = IntegerField('Token ID', validators=[validators.DataRequired()])
+    token_id: IntegerField = IntegerField('Token ID', validators=[validators.Optional()])
     user_id: IntegerField = IntegerField('User ID', validators=[validators.DataRequired()])
