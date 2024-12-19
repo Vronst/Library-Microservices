@@ -43,8 +43,7 @@ def hash_secret(secret: str, key: str):
 SECRET = hash_secret('adammati', '34B8PKD4789NDSS889FD53AD31467C52DBE53ED2SDG5D8D82DDNMNDSA')
 
 
-# TODO: finish this
-def get_token_mati(id_: int = 0) -> str:
+def get_token_mati(id_: int = 0, as_response=False) -> str | requests.Response:
     response: requests.Response = requests.post(
         TOKEN_URL,
         json={'user_id': str(id_),
@@ -54,13 +53,11 @@ def get_token_mati(id_: int = 0) -> str:
         })
     with open('token.log', 'w') as file:
         file.write(response.text) 
+    if as_response:
+        return response
     return response.json()['token']
 
 
-# try:
-#     ADMIN_TOKEN = get_token_mati()
-# except requests.exceptions.ConnectionError:
-#     ADMIN_TOKEN = None
     
 def connect_mati(*, method: str='GET', payload: Optional[dict] = None, query: Optional[dict] = None, url: str = '', **kwargs) -> requests.Response:        
     global ADMIN_TOKEN
@@ -88,7 +85,10 @@ def connect_mati(*, method: str='GET', payload: Optional[dict] = None, query: Op
                 response = requests.get(URL + url, headers=headers) if url \
                     else requests.get(URL + '/all' ,headers=headers)
     elif method == 'POST':
-        response = requests.post(URL + url, json=payload, headers=headers)
+        if kwargs.get('tokens', False):
+            response = get_token_mati(id_=kwargs.get('user_id', -1), as_response=True)
+        else:
+            response = requests.post(URL + url, json=payload, headers=headers)
     elif method == 'PUT':
         response = requests.put(URL + '/put', json=payload, headers=headers )
     elif method == 'DELETE':

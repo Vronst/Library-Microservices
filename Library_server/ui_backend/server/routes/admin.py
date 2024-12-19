@@ -21,7 +21,7 @@ from .. import session as db_session
 from ..utils import is_admin, connect_mati
 
 
-stf: dict[str, Type[FlaskForm] | list[Callable]] = {
+stf: dict = {
     'User': FormUser,
     'Library': FormLibrary,
     'RecentRead': FormRecent,
@@ -92,7 +92,7 @@ def edit_db(db: str) -> str | Response | tuple[str, int]:
     elif db == 'Tokens':
         columns = [
             'user_id',
-            'token'
+            'secret',
         ]
         try:
             data = connect_mati(tokens=True).json()
@@ -167,21 +167,22 @@ def edit_form(db: str, id: int | None = None) -> str | tuple[str, int] | Respons
                 ]
             if id:
                 token_data = connect_mati(token=id).json()
-                form = stf[db][1](**token_data)
+                form = stf[db](**token_data)
             else:
                 columns.remove('token_id')    
-                form = stf[db][0]()
+                form = stf[db]()
             if form.validate_on_submit():
                 payload = {**form.data}
                 if id:
                     response = connect_mati(method='PUT', payload=payload, url=f'/{id}')
                 else:
-                    response = connect_mati(method='PUT', payload=payload)
+                    response = connect_mati(method='POST',payload=payload, tokens=True, user_id=form.user_id.data)
                 redirection = True 
+            token = True
         case _:
             ignore: list[str] = ['id']
             obj: Base | None = db_session.query(stm[db]).get(ident=id)
-            form = stf[db][1](obj=obj) if id else stf[db][0]()
+            form = stf[db](obj=obj) if id else stf[db]()  
             columns = [column.key for column in stm[db].__table__.columns
                     if column.key not in ignore]
             if form.validate_on_submit():
