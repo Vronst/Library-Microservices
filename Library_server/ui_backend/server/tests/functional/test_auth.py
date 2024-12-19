@@ -14,10 +14,10 @@ class TestAuth:
         response = client.post(
             "/auth/register",
             data={
-                "nick": "testuser1",
+                "nick": "testuser",
                 "name": "Test",
                 "surname": "User",
-                "email": "test1@example.com",
+                "email": "test:@example.com",
                 "password": "password123",
                 'repeat_password': 'password123',
             },
@@ -30,7 +30,7 @@ class TestAuth:
 
         simple_logs('test_register', response.text)
 
-        assert nick.string == 'testuser'
+        assert nick.string == 'Welcome Test!'
         
         user = db_session.query(User).filter_by(nick="testuser").first()
         assert user is not None
@@ -47,7 +47,7 @@ class TestAuth:
                 password=generate_password_hash('pasword123', salt_length=24),  
             )
         )
-        # db_session.commit()
+        db_session.commit()
 
         response = client.post(
             "/auth/login",
@@ -62,14 +62,14 @@ class TestAuth:
         """Test user logout."""
         db_session.add(
             User(
-                nick='testuer',
+                nick='testuser',
                 name='Test',
                 surname='User',
                 email='test@example.com',
                 password=generate_password_hash('password123')
             )
         )
-        # db_session.commit()
+        db_session.commit()
         response = client.post(
             "/auth/login",
             data={"email": "test@example.com", "password": "password123"},

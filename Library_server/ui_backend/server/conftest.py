@@ -49,6 +49,7 @@ def db_session(engine):
     finally:
         # Rollback uncommitted changes and close the session
         session.rollback()
+        session.query(User).delete()
         session.close()
 
 
