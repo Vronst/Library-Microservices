@@ -10,3 +10,9 @@ class Config:
     # DATABASE_URL = 'sqlite:///test.db'
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
     SECRET_KEY: str | None = os.environ.get('SECRET_KEY')
+
+    
+class TestConfig(Config):
+    DATABASE_URL: str = "sqlite:///test.db"
+    TESTING: bool = True
+    WTF_CSRF_ENABLED: bool = False  # Disable CSRF for tests

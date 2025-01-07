@@ -8,3 +8,4 @@ test.*
 .mypy.ini
 *.db
 /*.db
+*.log
