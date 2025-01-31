@@ -1,16 +1,50 @@
-from typing import Generator
+from typing import Generator, Any
 import os
 import pytest
 from flask import Flask
 from server import create_app
 from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import sessionmaker
+from werkzeug.security import generate_password_hash
 from .models import metadata, User  # Ensure all models are imported
 from .config import TestConfig
 
 
 DB_LOC = 'test.db'
 DB_URI = f'sqlite:///{DB_LOC}'
+USER: dict[str, Any]
+DATA: dict[str, str]
+USER, ADMIN, DATA, ADATA = {
+    "admin": False,
+    "nick": 'main_test',
+    "name": 'tester',
+    "surname": 'test1',
+    "email": 'test@test.pl',
+    "password": generate_password_hash('testpass', salt_length=24),
+     },\
+    {
+        'admin': True,
+        'nick': 'adam',
+        'name': 'adam',
+        'surname': 'adam',
+        'email': 'adam@example.com',
+        'password': generate_password_hash('adam', salt_length=24),
+    },\
+    {
+    "nick": "main_test",    
+    "name": "tester",
+    "surname": "test1",
+    "email": "test@test.pl",
+    "password": "testpass",
+    'repeat_password': 'testpass',
+      },\
+    {
+        'nick': 'adam',
+        'name': 'adam',
+        'surname': 'adam',
+        'email': 'adam@example.com',
+        'password': 'adam',
+    }
 
 
 @pytest.fixture(scope="session")

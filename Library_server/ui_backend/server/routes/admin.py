@@ -50,14 +50,23 @@ def index() -> str:
     len_library: int = len(db_session.query(Library).all())
     len_recent: int = len(db_session.query(RecentRead).all())
     len_family: int = len(db_session.query(Family).all())
+    data: Response | None
     try:
-        len_books: int = len(connect_mati().json())
+        len_books: int
+        if data := connect_mati():
+            len_book = len(data.json())
+        else:
+            len_books = 0
     except requests.exceptions.JSONDecodeError:
         len_books = 0
     try:
-        len_tokens: int = len(connect_mati(tokens=True).json())
+        len_tokens: int
+        if data := connect_mati(tokens=True):
+            len_tokens = len(data.json())
+        else:
+            len_tokens = 0
     except requests.exceptions.JSONDecodeError:
-        len_tokens = 0
+        len_tokens = 0    
         
     databases = {
         'User': len_user,
@@ -74,7 +83,7 @@ def index() -> str:
 @login_required
 @is_admin
 def edit_db(db: str) -> str | Response | tuple[str, int]:
-    data: list[Any]
+    data: list[Any]| None
     columns: list[str]
     if db == 'Books':
         columns = [
@@ -86,7 +95,10 @@ def edit_db(db: str) -> str | Response | tuple[str, int]:
             'liczbaStron'
         ]
         try:
-            data = connect_mati().json()
+            if data := connect_mati():
+                data = data.json()
+            else:
+                data = []
         except requests.exceptions.JSONDecodeError:
             data = []
     elif db == 'Tokens':
@@ -95,7 +107,10 @@ def edit_db(db: str) -> str | Response | tuple[str, int]:
             'secret',
         ]
         try:
-            data = connect_mati(tokens=True).json()
+            if data := connect_mati(tokens=True):
+                data = data.json()
+            else:
+                data = []
         except requests.exceptions.JSONDecodeError:
             data = []
     else:
@@ -118,6 +133,8 @@ def edit_form(db: str, id: int | None = None) -> str | tuple[str, int] | Respons
     columns: list[str]
     token: bool = False
     redirection: bool = False
+    token_data: dict | None
+    book: dict | None
 
     if request.method == 'DELETE':
         
@@ -141,7 +158,10 @@ def edit_form(db: str, id: int | None = None) -> str | tuple[str, int] | Respons
                 'liczbaStron'
             ]
             if id:
-                book = connect_mati(url=f'/{id}').json()
+                if book := connect_mati(url=f'/{id}'):
+                    book = book.json()
+                else:
+                    book = {}
                 form = stf[db][1](**book)
             else:
                 columns.remove('ksiazkaID')
@@ -166,7 +186,10 @@ def edit_form(db: str, id: int | None = None) -> str | tuple[str, int] | Respons
                 'user_id'
                 ]
             if id:
-                token_data = connect_mati(token=id).json()
+                if token_data := connect_mati(token=id):
+                    token_data = token_data.json()
+                else:
+                    token_data = {}
                 form = stf[db](**token_data)
             else:
                 columns.remove('token_id')    

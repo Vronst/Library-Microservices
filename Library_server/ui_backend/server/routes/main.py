@@ -42,21 +42,32 @@ def index() -> str:
 
 
 @main.route('/book/<string:author>/<string:name>/')
-def book_view(author: str, name: str) -> str:
-    book: dict = connect_mati(query={
+def book_view(author: str, name: str) -> str | Response:
+    book: dict | None
+    if book := connect_mati(query={
         'author': author,
         'title': name,
-    }).json()[0]
+    }):
+        book = book.json()[0]
+    else:
+        return redirect(url_for('main.index'))
+    if not isinstance(book, dict):
+        return redirect(url_for('main.index'))
     img_checker(book)
-    related_books: dict = connect_mati(query={'genre': book['gatunek']}).json()  # add [:n] where n is limiter
-    img_checker(related_books)
+    related_books: dict | None
+    if related_books := connect_mati(query={'genre': book['gatunek']}):
+        related_books = related_books.json()  # add [:n] where n is limiter
+    else:
+        related_books = {}
+    if isinstance(related_books, dict):
+        img_checker(related_books)
     in_library: Library | None = db_session.query(Library).filter(Library.book_author == author, Library.book_name == name).first()
     return render_template('book_view.html', book=book, related_books=related_books, in_library=in_library)
 
 
 @main.route('/search/', methods=['GET', 'POST'])
 def search() -> str:
-    response: Iterable[Library] | list | dict = []
+    response: Iterable[Library] | list | dict | None = []
     form = SearchForm()
     if request.method == 'POST' and form.validate_on_submit():
         if form.owned.data:
@@ -74,7 +85,8 @@ def search() -> str:
                 query.update({'author': author})
             if title := form.title.data:
                 query.update({'title': title})
-            response = connect_mati(query=query).json()
+            if response := connect_mati(query=query):
+                response = response.json()
             if isinstance(response, dict) or isinstance(response, list):
                 img_checker(response)
             
@@ -124,12 +136,15 @@ def user_library() -> str:
 @main.route('/library/my_library/<string:author>/<string:name>', methods=['POST', 'DELETE'])
 @login_required
 def edit_library(author: str, name: str) -> tuple[str, int] | Response:
-    check_user_db = db_session.query(Library).filter(Library.book_author == author, Library.book_name == name).first()
-    check_our_db = connect_mati(query={
+    check_user_db: Library | None = db_session.query(Library).filter(Library.book_author == author, Library.book_name == name).first()
+    check_our_db: dict | None | Response
+    if check_our_db := connect_mati(query={
         'author': author,
         'title': name
-        }).json()[0]  # check if we have book
-    
+        }):
+        check_our_db = check_our_db.json()[0]  # check if we have book
+    if not isinstance(check_our_db, dict):
+        check_our_db = {}
     if request.method == 'POST' and not check_user_db and check_our_db:
         if 'img' in request.form.keys():
             img = request.form['img']

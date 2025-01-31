@@ -7,7 +7,7 @@ from datetime import date
 from wtforms import ValidationError
 from sqlalchemy import Engine, text
 from flask_login import LoginManager, current_user
-from flask import abort
+from flask import abort, jsonify
 from werkzeug.security import generate_password_hash
 from .models import User, RecentRead
 
@@ -44,22 +44,25 @@ SECRET = hash_secret('adammati', '34B8PKD4789NDSS889FD53AD31467C52DBE53ED2SDG5D8
 
 
 def get_token_mati(id_: int = 0, as_response=False) -> str | requests.Response:
-    response: requests.Response = requests.post(
-        TOKEN_URL,
-        json={'user_id': str(id_),
-              'secret': SECRET},
-        headers={
-            'Content-Type': 'application/json'
-        })
-    with open('token.log', 'w') as file:
-        file.write(response.text) 
-    if as_response:
-        return response
-    return response.json()['token']
+    try:
+        response: requests.Response = requests.post(
+            TOKEN_URL,
+            json={'user_id': str(id_),
+                'secret': SECRET},
+            headers={
+                'Content-Type': 'application/json'
+            })
+        with open('token.log', 'w') as file:
+            file.write(response.text) 
+        if as_response:
+            return response
+        return response.json()['token']
+    except requests.exceptions.ConnectionError:
+        return jsonify({'error': 'Failed to fetch the token'}), 500
 
 
     
-def connect_mati(*, method: str='GET', payload: Optional[dict] = None, query: Optional[dict] = None, url: str = '', **kwargs) -> requests.Response:        
+def connect_mati(*, method: str='GET', payload: Optional[dict] = None, query: Optional[dict] = None, url: str = '', **kwargs) -> requests.Response | None:        
     global ADMIN_TOKEN
     if not ADMIN_TOKEN:
         ADMIN_TOKEN = get_token_mati()
@@ -72,30 +75,33 @@ def connect_mati(*, method: str='GET', payload: Optional[dict] = None, query: Op
         'Content-Type': 'application/json',
         'Authorization': f'Bearer {token}'
     }
-    if method == 'GET':
-        if kwargs.get('tokens', False):
-            response = requests.get(URL.split('/Books')[0] + '/Auth/tokens')
-        else:
-            if query:
-                final_url: str = URL + url + '/0?'
-                for key, value in query.items():
-                    final_url += f'{key}={value.replace(' ', '%20')}&'
-                response = requests.get(final_url, headers=headers)
+    try:
+        if method == 'GET':
+            if kwargs.get('tokens', False):
+                response = requests.get(URL.split('/Books')[0] + '/Auth/tokens')
             else:
-                response = requests.get(URL + url, headers=headers) if url \
-                    else requests.get(URL + '/all' ,headers=headers)
-    elif method == 'POST':
-        if kwargs.get('tokens', False):
-            response = get_token_mati(id_=kwargs.get('user_id', -1), as_response=True)
-        else:
-            response = requests.post(URL + url, json=payload, headers=headers)
-    elif method == 'PUT':
-        response = requests.put(URL + '/put', json=payload, headers=headers )
-    elif method == 'DELETE':
-        response = requests.delete(URL + url, headers=headers)
-    with open('response.log', 'w') as file:
-        file.write(response.text + str(response.status_code))
-    return response
+                if query:
+                    final_url: str = URL + url + '/0?'
+                    for key, value in query.items():
+                        final_url += f'{key}={value.replace(' ', '%20')}&'
+                    response = requests.get(final_url, headers=headers)
+                else:
+                    response = requests.get(URL + url, headers=headers) if url \
+                        else requests.get(URL + '/all' ,headers=headers)
+        elif method == 'POST':
+            if kwargs.get('tokens', False):
+                response = get_token_mati(id_=kwargs.get('user_id', -1), as_response=True)
+            else:
+                response = requests.post(URL + url, json=payload, headers=headers)
+        elif method == 'PUT':
+            response = requests.put(URL + '/put', json=payload, headers=headers )
+        elif method == 'DELETE':
+            response = requests.delete(URL + url, headers=headers)
+        with open('response.log', 'w') as file:
+            file.write(response.text + str(response.status_code))
+        return response
+    except requests.exceptions.ConnectionError:
+        return None
 
     
 def img_checker(book: list[dict] | dict) -> list[dict] | dict:
@@ -185,5 +191,5 @@ def populate_users_db() -> None:
 
     
 def simple_logs(name: str, response: str) -> None:
-    with open(f'{name}.log', 'w') as file:
+    with open(f'logs/{name}.log', 'w') as file:
         file.write(response)
